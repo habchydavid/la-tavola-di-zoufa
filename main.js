@@ -37,8 +37,8 @@
     };
   }
   const f = (n) => n.toFixed(1);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-  // smooth, slightly wobbly closed shape
   function blob(cx, cy, rx, ry, r, wob = 0.15, n = 9) {
     const pts = [];
     const ph = r() * TAU;
@@ -64,7 +64,6 @@
     const l = pts[pts.length - 1];
     return d + `L${f(l[0])},${f(l[1])}`;
   }
-  // random points inside a circle, keeping some distance from each other
   function scatter(r, R, count, minD, taken = []) {
     const out = [];
     let tries = 0;
@@ -88,9 +87,15 @@
      PIZZA ILLUSTRATION (drawn in code: every pizza is unique)
      ========================================================= */
   const TOPPING = {
-    basil: { n: 6, R: 125, d: 52, draw(g, r) {
+    basil: { n: 6, R: 125, d: 52, draw(g) {
       S("path", { d: "M0,-20 C11,-13 12,7 0,20 C-12,7 -11,-13 0,-20Z", fill: "url(#g-basil)", filter: "url(#f-shadow)" }, g);
       S("path", { d: "M0,-17 L0,17 M0,-6 L6,-11 M0,2 L-6,-4 M0,9 L5,4", stroke: "#a8d98a", "stroke-width": 1, opacity: 0.45, fill: "none" }, g);
+    }},
+    tomato: { n: 8, R: 135, d: 40, draw(g, r) {
+      S("circle", { r: 11, fill: "url(#g-tomato)", filter: "url(#f-shadow)" }, g);
+      S("circle", { r: 7.5, fill: "#ff8a6a", opacity: 0.55 }, g);
+      for (let i = 0; i < 3; i++) { const a = (i / 3) * TAU + r(); S("ellipse", { cx: f(cos(a) * 4), cy: f(sin(a) * 4), rx: 1.6, ry: 1, fill: "#ffe2a8", opacity: 0.9 }, g); }
+      S("ellipse", { cx: -4, cy: -5, rx: 3, ry: 1.5, fill: "#fff", opacity: 0.35 }, g);
     }},
     salami: { n: 9, R: 135, d: 46, draw(g, r) {
       S("circle", { r: 18, fill: "url(#g-salami)", filter: "url(#f-shadow)" }, g);
@@ -102,7 +107,7 @@
       S("ellipse", { rx: 14, ry: 10, fill: "url(#g-sujuk)", filter: "url(#f-shadow)" }, g);
       for (let i = 0; i < 5; i++) S("circle", { cx: f((r() * 2 - 1) * 8), cy: f((r() * 2 - 1) * 5), r: f(0.8 + r() * 1.3), fill: "#e8b08a", opacity: 0.6 }, g);
     }},
-    chili: { n: 14, R: 140, d: 24, draw(g, r) {
+    chili: { n: 14, R: 140, d: 24, draw(g) {
       S("circle", { r: 6, fill: "none", stroke: "#d41f12", "stroke-width": 2.6 }, g);
       S("circle", { r: 2, cx: 1, fill: "#f5d68a", opacity: 0.9 }, g);
     }},
@@ -118,6 +123,14 @@
     prosciutto: { n: 6, R: 120, d: 64, draw(g, r) {
       S("path", { d: blob(0, 0, 30, 15, r, 0.28, 7), fill: "url(#g-pros)", filter: "url(#f-shadow)" }, g);
       S("path", { d: `M-20,${f(r() * 4)} Q0,-8 22,${f(r() * 4)}`, stroke: "#f8dcd6", "stroke-width": 2.4, fill: "none", opacity: 0.85 }, g);
+    }},
+    bresaola: { n: 7, R: 120, d: 58, draw(g, r) {
+      S("path", { d: blob(0, 0, 26, 18, r, 0.22, 8), fill: "url(#g-bresaola)", filter: "url(#f-shadow)" }, g);
+      S("path", { d: blob(-3, -2, 15, 9, r, 0.3, 7), fill: "#c4545c", opacity: 0.35 }, g);
+    }},
+    truffle: { n: 12, R: 130, d: 32, draw(g, r) {
+      S("path", { d: blob(0, 0, 11, 9, r, 0.25, 8), fill: "url(#g-truffle)", filter: "url(#f-shadow)" }, g);
+      S("path", { d: "M-7,-2 Q-2,3 3,-3 T8,1 M-5,4 Q0,6 5,3", stroke: "#c9b39a", "stroke-width": 0.8, fill: "none", opacity: 0.7 }, g);
     }},
     rucola: { n: 18, R: 95, d: 22, draw(g) {
       S("path", { d: "M0,-20 L5,-14 L3,-10 L8,-5 L4,-2 L8,4 L3,6 L5,12 L0,20 L-5,12 L-3,6 L-8,4 L-4,-2 L-8,-5 L-3,-10 L-5,-14Z", fill: "url(#g-rucola)", filter: "url(#f-shadow)" }, g);
@@ -136,18 +149,18 @@
       S("circle", { r: f(1 + r() * 0.9), fill: r() > 0.5 ? "#55682b" : "#3c4d1e" }, g);
     }},
   };
+  const SAUCE_FILL = { red: "url(#g-sauce)", white: "url(#g-white)", pesto: "url(#g-pesto)" };
 
   function makePizza(o = {}) {
     const r = rng(o.seed || 1);
     const svg = S("svg", { viewBox: "-215 -215 430 430", "aria-hidden": "true" });
     const L = { svg };
-    S("ellipse", { cx: 0, cy: 12, rx: 198, ry: 198, fill: "#2a0c04", opacity: 0.28, filter: "url(#f-softer)" }, svg);
+    S("ellipse", { cx: 0, cy: 12, rx: 198, ry: 198, fill: "#000", opacity: 0.45, filter: "url(#f-softer)" }, svg);
     const base = (L.base = S("g", {}, svg));
     const edge = blob(0, 0, 194, 194, r, 0.022, 22);
     L.raw = S("path", { d: edge, fill: "url(#g-dough)" }, base);
     L.crust = S("path", { d: edge, fill: "url(#g-crust)" }, base);
 
-    // leopard spots + blisters on the rim
     L.char = S("g", {}, base);
     const charG = S("g", { filter: "url(#f-soft)" }, L.char);
     for (let i = 0; i < 34; i++) {
@@ -159,23 +172,31 @@
       S("circle", { cx: f(cos(a) * rr), cy: f(sin(a) * rr), r: f(2 + r() * 4), fill: "#fbe2b0", opacity: 0.55 }, L.char);
     }
 
-    // sauce
     L.sauce = S("g", {}, base);
     if (o.sauce !== "none") {
-      S("path", { d: blob(0, 0, 160, 160, r, 0.04, 16), fill: o.sauce === "white" ? "url(#g-white)" : "url(#g-sauce)", filter: "url(#f-rough)" }, L.sauce);
+      S("path", { d: blob(0, 0, 160, 160, r, 0.04, 16), fill: SAUCE_FILL[o.sauce] || SAUCE_FILL.red, filter: "url(#f-rough)" }, L.sauce);
       if (o.sauce !== "white") for (let i = 0; i < 40; i++) {
         const a = r() * TAU, d = Math.sqrt(r()) * 148;
-        S("circle", { cx: f(cos(a) * d), cy: f(sin(a) * d), r: f(0.8 + r() * 1.4), fill: "#6e140b", opacity: 0.35 }, L.sauce);
+        S("circle", { cx: f(cos(a) * d), cy: f(sin(a) * d), r: f(0.8 + r() * 1.4), fill: o.sauce === "pesto" ? "#2c4410" : "#6e140b", opacity: 0.35 }, L.sauce);
       }
     }
 
     const taken = [];
-    // mozzarella
+    const tops = o.toppings || [];
     L.cheeseG = S("g", {}, base);
     L.cheese = [];
     L.brown = S("g", { filter: "url(#f-soft)" }, base);
+    if (tops.includes("burrata")) {
+      // big creamy burrata in the middle, everything else around it
+      taken.push([0, 0], [34, 0], [-34, 0], [0, 34], [0, -34], [24, 24], [-24, 24], [24, -24], [-24, -24]);
+      const p = piece(L.cheeseG, 0, 0, 0, 1);
+      S("path", { d: blob(0, 0, 52, 48, r, 0.12, 10), fill: "url(#g-burrata)", filter: "url(#f-shadow)" }, p.inner);
+      S("path", { d: blob(4, 6, 26, 20, r, 0.25, 8), fill: "#fffef8", opacity: 0.9 }, p.inner);
+      S("path", { d: "M-30,-8 Q-6,-26 24,-14", stroke: "#e9d39b", "stroke-width": 3, fill: "none", opacity: 0.8, "stroke-linecap": "round" }, p.inner);
+      L.cheese.push(p);
+    }
     if (o.cheese !== false) {
-      const pts = scatter(r, 125, o.sauce === "white" ? 16 : 13, 48);
+      const pts = scatter(r, 125, o.sauce === "white" ? 16 : 13, 48, taken);
       pts.forEach(([x, y]) => {
         const p = piece(L.cheeseG, x, y, r() * 360, 1);
         const rad = 20 + r() * 12;
@@ -184,11 +205,13 @@
         L.cheese.push(p);
         for (let k = 0; k < 2; k++) S("circle", { cx: f(x + (r() * 2 - 1) * rad * 0.5), cy: f(y + (r() * 2 - 1) * rad * 0.5), r: f(3 + r() * 5), fill: "#d39444", opacity: 0.5 }, L.brown);
       });
+      taken.length = 0; // toppings may sit on top of cheese
+      if (tops.includes("burrata")) taken.push([0, 0], [34, 0], [-34, 0], [0, 34], [0, -34]);
     }
 
-    // toppings
     L.tops = {};
-    (o.toppings || []).forEach((name) => {
+    tops.forEach((name) => {
+      if (name === "burrata") return;
       const t = TOPPING[name];
       const g = S("g", { class: "top-" + name }, base);
       L.tops[name] = [];
@@ -212,7 +235,6 @@
       });
     });
 
-    // olive oil sheen
     L.oil = S("g", { filter: "url(#f-soft)" }, base);
     for (let i = 0; i < 6; i++) {
       const a = r() * TAU, d = r() * 110;
@@ -222,10 +244,11 @@
   }
 
   /* =========================================================
-     SPAGHETTI PLATE ILLUSTRATION
+     PASTA PLATE ILLUSTRATION
      ========================================================= */
   const NOODLE = {
     red: ["#e0873f", "#d4612d", "#e99a4c"],
+    pink: ["#f0a07a", "#e88a6a", "#f5b48e"],
     oil: ["#f3d58a", "#ecc66c", "#f6df9f"],
     cream: ["#f5d97f", "#edc663", "#f8e39c"],
     ragu: ["#efc46f", "#e8b35e", "#f4d185"],
@@ -237,10 +260,10 @@
     const L = { svg };
     const colors = NOODLE[o.sauce] || NOODLE.red;
 
-    S("ellipse", { cx: 0, cy: 14, rx: 204, ry: 204, fill: "#2a0c04", opacity: 0.25, filter: "url(#f-softer)" }, svg);
+    S("ellipse", { cx: 0, cy: 14, rx: 204, ry: 204, fill: "#000", opacity: 0.45, filter: "url(#f-softer)" }, svg);
     S("circle", { r: 204, fill: "url(#g-plate)" }, svg);
-    S("circle", { r: 197, fill: "none", stroke: "#c8321f", "stroke-width": 3.5 }, svg);
-    S("circle", { r: 190, fill: "none", stroke: "#c8321f", "stroke-width": 1, opacity: 0.6 }, svg);
+    S("circle", { r: 197, fill: "none", stroke: "#c9a043", "stroke-width": 3 }, svg);
+    S("circle", { r: 190, fill: "none", stroke: "#c9a043", "stroke-width": 1, opacity: 0.6 }, svg);
     S("circle", { r: 148, fill: "none", stroke: "#000", "stroke-width": 12, opacity: 0.05, filter: "url(#f-soft)" }, svg);
 
     const food = (L.food = S("g", {}, svg));
@@ -265,17 +288,19 @@
       if (i % 2 === 0) S("path", { d, stroke: "#fff", "stroke-width": 1.2, fill: "none", "stroke-linecap": "round", opacity: 0.28, transform: "translate(-1 -1)" }, mainG);
     }
 
-    // sauce on top
     const top = (L.top = S("g", {}, food));
     if (o.sauce === "red") {
       S("path", { d: blob(0, 0, 58, 50, r, 0.25, 9), fill: "url(#g-sauce)", opacity: 0.92, filter: "url(#f-rough)" }, top);
+    } else if (o.sauce === "pink") {
+      S("path", { d: blob(0, 0, 60, 52, r, 0.25, 9), fill: "#e4775c", opacity: 0.75, filter: "url(#f-rough)" }, top);
     } else if (o.sauce === "ragu") {
       S("path", { d: blob(0, 0, 66, 58, r, 0.2, 10), fill: "#9b3a1c", filter: "url(#f-rough)" }, top);
       for (let i = 0; i < 70; i++) {
         const a = r() * TAU, d = Math.sqrt(r()) * 58;
         S("circle", { cx: f(cos(a) * d), cy: f(sin(a) * d), r: f(2 + r() * 4), fill: r() > 0.5 ? "#6b2a14" : "#8a3a1c" }, top);
       }
-    } else if (o.sauce === "oil" || o.sauce === "cream") {
+    }
+    if (o.sauce === "oil" || o.sauce === "cream" || o.sauce === "pink") {
       for (let i = 0; i < 8; i++) {
         const a = r() * TAU, d = r() * 90;
         S("ellipse", { cx: f(cos(a) * d), cy: f(sin(a) * d), rx: f(8 + r() * 14), ry: f(3 + r() * 3), fill: "#fff8d0", opacity: 0.3, filter: "url(#f-soft)", transform: `rotate(${f(r() * 180)})` }, top);
@@ -288,28 +313,22 @@
         const p = piece(top, x, y, 0, 1);
         S("circle", { r: 22, fill: "url(#g-meat)", filter: "url(#f-shadow)" }, p.inner);
         S("path", { d: blob(-2, -4, 14, 10, r, 0.3, 7), fill: "url(#g-sauce)", opacity: 0.9 }, p.inner);
-        S("ellipse", { cx: -8, cy: -10, rx: 5, ry: 2.5, fill: "#fff", opacity: 0.25 }, p.inner);
       });
     }
     if (ex.includes("bacon")) scatter(r, 100, 16, 18).forEach(([x, y]) => {
       const p = piece(top, x, y, r() * 180, 1);
       S("rect", { x: -6, y: -3.5, width: 12, height: 7, rx: 2, fill: r() > 0.5 ? "#a44a2c" : "#c46a3e", filter: "url(#f-shadow)" }, p.inner);
-      S("rect", { x: -6, y: -0.6, width: 12, height: 1.6, fill: "#f2c7a5", opacity: 0.8 }, p.inner);
     });
-    if (ex.includes("garlic")) scatter(r, 100, 12, 20).forEach(([x, y]) => {
-      const p = piece(top, x, y, r() * 180, 0.8); TOPPING.garlic.draw(p.inner, r);
-    });
+    if (ex.includes("garlic")) scatter(r, 100, 12, 20).forEach(([x, y]) => TOPPING.garlic.draw(piece(top, x, y, r() * 180, 0.8).inner, r));
+    if (ex.includes("truffle")) scatter(r, 95, 10, 30).forEach(([x, y]) => TOPPING.truffle.draw(piece(top, x, y, r() * 180, 0.9).inner, r));
     const specks = (name, n, R, fn) => { if (ex.includes(name)) for (let i = 0; i < n; i++) { const a = r() * TAU, d = Math.sqrt(r()) * R; fn(cos(a) * d, sin(a) * d); } };
     specks("chili", 40, 115, (x, y) => S("rect", { x: f(x), y: f(y), width: 3, height: 2, fill: "#c8200f", transform: `rotate(${f(r() * 180)} ${f(x)} ${f(y)})` }, top));
     specks("parsley", 70, 115, (x, y) => S("circle", { cx: f(x), cy: f(y), r: f(1 + r()), fill: "#3d7a2a" }, top));
     specks("pepper", 70, 115, (x, y) => S("circle", { cx: f(x), cy: f(y), r: f(0.8 + r() * 0.8), fill: "#1d1512" }, top));
     specks("parm", 80, 70, (x, y) => S("rect", { x: f(x), y: f(y), width: f(2 + r() * 3), height: 1.6, fill: "#fff6dc", transform: `rotate(${f(r() * 180)} ${f(x)} ${f(y)})` }, top));
-    if (ex.includes("basil")) [[-14, -20, -30], [16, -8, 40], [-2, 16, 160]].forEach(([x, y, rt]) => {
-      const p = piece(top, x, y, rt, 1.05); TOPPING.basil.draw(p.inner, r);
-    });
+    if (ex.includes("basil")) [[-14, -20, -30], [16, -8, 40], [-2, 16, 160]].forEach(([x, y, rt]) => TOPPING.basil.draw(piece(top, x, y, rt, 1.05).inner, r));
 
     if (o.story) {
-      // the twirl: a spiral nest + a fork
       const spiral = [];
       for (let i = 0; i <= 260; i++) { const t = i / 260; const a = t * TAU * 6; const rr = 6 + t * 56; spiral.push([cos(a) * rr, sin(a) * rr]); }
       let d = `M${f(spiral[0][0])},${f(spiral[0][1])}`;
@@ -322,7 +341,7 @@
       L.nestPaths = $$(".nest", L.nest);
       L.nestTop = S("g", { opacity: 0 }, L.nest);
       S("path", { d: blob(4, -6, 26, 20, r, 0.25, 8), fill: "url(#g-sauce)", filter: "url(#f-rough)" }, L.nestTop);
-      for (let i = 0; i < 30; i++) { const a = r() * TAU, d = Math.sqrt(r()) * 40; S("rect", { x: f(cos(a) * d), y: f(sin(a) * d), width: f(2 + r() * 3), height: 1.6, fill: "#fff6dc" }, L.nestTop); }
+      for (let i = 0; i < 30; i++) { const a = r() * TAU, dd = Math.sqrt(r()) * 40; S("rect", { x: f(cos(a) * dd), y: f(sin(a) * dd), width: f(2 + r() * 3), height: 1.6, fill: "#fff6dc" }, L.nestTop); }
       TOPPING.basil.draw(piece(L.nestTop, 26, 28, 35, 1.1).inner, r);
       L.fork = S("g", {}, L.lift);
       const fk = S("g", { filter: "url(#f-shadow)" }, L.fork);
@@ -337,6 +356,7 @@
      ========================================================= */
   let lang = "en";
   const t = (k) => (TEXT[lang] && TEXT[lang][k]) ?? TEXT.en[k] ?? "";
+  const tr = (v) => (v && typeof v === "object" ? v[lang] || v.en : v);
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch {} },
@@ -362,19 +382,16 @@
      ========================================================= */
   function intro() {
     const box = $("[data-intro]");
-    const neon = $(".neon--intro", box);
     let done = false;
     const open = () => {
       if (done) return; done = true;
-      neon.classList.add("is-lit");
       box.classList.add("is-open");
       document.body.classList.remove("is-intro");
-      setTimeout(() => document.body.classList.add("is-ready"), 350);
-      setTimeout(() => box.classList.add("is-gone"), 1300);
+      setTimeout(() => document.body.classList.add("is-ready"), 250);
+      setTimeout(() => box.classList.add("is-gone"), 1000);
     };
     if (reduced) { open(); return; }
-    setTimeout(() => neon.classList.add("is-lit"), 350);
-    setTimeout(open, 2300);
+    setTimeout(open, 2500);
     box.addEventListener("click", open);
     addEventListener("keydown", open, { once: true });
   }
@@ -383,17 +400,66 @@
      HERO
      ========================================================= */
   function hero() {
-    const title = $("[data-split]");
-    const txt = title.textContent;
-    title.textContent = "";
-    [...txt].forEach((c, i) => {
-      const s = document.createElement("span");
-      s.className = c === " " ? "ch sp" : "ch";
-      s.textContent = c === " " ? " " : c;
-      s.style.transitionDelay = `${i * 55}ms`;
-      title.appendChild(s);
+    let i = 0;
+    $$("[data-split]").forEach((el) => {
+      const txt = el.textContent.trim();
+      el.textContent = "";
+      [...txt].forEach((c) => {
+        const s = document.createElement("span");
+        s.className = c === " " ? "ch sp" : "ch";
+        s.textContent = c === " " ? " " : c;
+        s.style.transitionDelay = `${i++ * 45}ms`;
+        el.appendChild(s);
+      });
     });
-    $("[data-hero-pizza]").appendChild(makePizza({ seed: 11, sauce: "red", cheese: true, toppings: ["basil"] }).svg);
+    $("[data-hero-pizza]").appendChild(makePizza({ seed: 11, sauce: "red", cheese: true, toppings: ["basil", "tomato"] }).svg);
+  }
+
+  /* embers rising from the fire */
+  function embers() {
+    const cv = $("[data-embers]");
+    if (!cv || reduced) return;
+    const ctx = cv.getContext("2d");
+    let W, H, dpr, parts = [], visible = true;
+    const resize = () => {
+      dpr = min(2, devicePixelRatio || 1);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = W * dpr; cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    const spawn = (anywhere) => ({
+      x: Math.random() * W,
+      y: anywhere ? Math.random() * H : H + 10,
+      r: 0.6 + Math.random() * 1.8,
+      vy: 0.35 + Math.random() * 0.9,
+      vx: (Math.random() - 0.5) * 0.3,
+      ph: Math.random() * TAU,
+      life: 0.4 + Math.random() * 0.6,
+    });
+    resize();
+    const N = W < 700 ? 40 : 80;
+    for (let i = 0; i < N; i++) parts.push(spawn(true));
+    addEventListener("resize", resize);
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(cv);
+    const tick = (time) => {
+      requestAnimationFrame(tick);
+      if (!visible) return;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "lighter";
+      for (const p of parts) {
+        p.y -= p.vy; p.x += p.vx + sin(time / 900 + p.ph) * 0.35;
+        const k = clamp(p.y / H);
+        const a = k * p.life;
+        if (p.y < -10 || a < 0.02) Object.assign(p, spawn(false));
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+        g.addColorStop(0, `rgba(255, 210, 120, ${a})`);
+        g.addColorStop(0.4, `rgba(255, 120, 30, ${a * 0.6})`);
+        g.addColorStop(1, "rgba(255, 80, 0, 0)");
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 4, 0, TAU); ctx.fill();
+      }
+    };
+    requestAnimationFrame(tick);
   }
 
   /* =========================================================
@@ -403,15 +469,14 @@
   function setupStory() {
     story.el = $("[data-story]");
     story.L = makePizza({ seed: 5, sauce: "red", cheese: true, toppings: ["basil"] });
-    $("[data-story-pizza]").appendChild(story.L.svg);
     story.pizza = $("[data-story-pizza]");
+    story.pizza.appendChild(story.L.svg);
     story.steps = $$("[data-steps] li");
     story.dots = $$("[data-story-dots] i");
     story.oven = $(".oven");
     story.peel = $(".story__peel");
     story.temp = $("[data-temp]");
     story.time = $("[data-time]");
-    // clip the sauce so it can "spread"
     const cp = S("clipPath", { id: "clip-sauce" }, S("defs", {}, story.L.svg));
     story.clip = S("circle", { r: 0 }, cp);
     story.L.sauce.setAttribute("clip-path", "url(#clip-sauce)");
@@ -422,22 +487,18 @@
   function renderStory(p) {
     const s = p * 5;
     const L = story.L;
-    // 1. dough stretches out
     const dough = easeOut(seg(s, 0, 0.9));
     const wob = sin(s * 9) * 0.02 * (1 - dough);
     L.base.setAttribute("transform", `scale(${(0.42 + dough * 0.58 + wob).toFixed(3)} ${(0.42 + dough * 0.58 - wob).toFixed(3)})`);
-    // 2. sauce spreads in a spiral
     const sauce = easeOut(seg(s, 1, 1.85));
     story.clip.setAttribute("r", f(sauce * 175));
     L.sauce.setAttribute("transform", `rotate(${f((1 - sauce) * -120)})`);
-    // 3. cheese drops in one by one
     const ck = seg(s, 2, 2.9);
     L.cheese.forEach((c, i) => {
       const k = easeBack(seg(ck, (i / L.cheese.length) * 0.7, (i / L.cheese.length) * 0.7 + 0.3));
       c.outer.setAttribute("transform", `translate(${f(c.x)} ${f(c.y - (1 - k) * 70)}) scale(${(0.4 + 0.6 * clamp(k, 0, 1.2)).toFixed(3)})`);
       c.outer.setAttribute("opacity", clamp(k * 2).toFixed(2));
     });
-    // 4. the oven
     const bake = seg(s, 3.1, 3.9);
     L.crust.setAttribute("opacity", bake.toFixed(3));
     L.char.setAttribute("opacity", bake.toFixed(3));
@@ -447,18 +508,15 @@
     story.peel.style.opacity = (1 - ovenIn * 0.85).toFixed(3);
     const puff = 1 + sin(bake * Math.PI) * 0.03;
     story.pizza.style.transform = `scale(${((1 - ovenIn * 0.1) * puff).toFixed(3)}) rotate(${f(p * 140)}deg)`;
-    const temp = Math.round(20 + 430 * easeOut(seg(s, 2.6, 3.15)));
-    story.temp.textContent = temp;
+    story.temp.textContent = Math.round(20 + 430 * easeOut(seg(s, 2.6, 3.15)));
     const secs = Math.round(90 * seg(s, 3.1, 3.9));
     story.time.textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
-    // 5. basil & olive oil
     const fin = seg(s, 4.05, 4.8);
     (L.tops.basil || []).forEach((b, i, arr) => {
       const k = easeBack(seg(fin, (i / arr.length) * 0.6, (i / arr.length) * 0.6 + 0.4));
       b.outer.setAttribute("transform", `translate(${f(b.x)} ${f(b.y)}) scale(${clamp(k, 0, 1.3).toFixed(3)})`);
     });
     L.oil.setAttribute("opacity", fin.toFixed(3));
-
     const idx = min(4, Math.floor(s));
     if (idx !== story.active) {
       story.active = idx;
@@ -491,53 +549,67 @@
   }
 
   /* =========================================================
-     MENU
+     MENU BOARD
      ========================================================= */
-  let tab = "pizza";
+  let menuObserver;
   function renderMenu() {
-    const ul = $("[data-dishes]");
-    ul.innerHTML = "";
-    SITE.menu[tab].forEach((d, i) => {
-      const li = document.createElement("li");
-      li.className = "dish";
-      li.style.animationDelay = `${i * 60}ms`;
-      const tags = (d.tags || []).map((tg) => `<span class="tag tag--${tg}">${t("tag." + tg)}</span>`).join("");
-      li.innerHTML = `
-        <button class="dish__btn" aria-expanded="false">
-          <span class="dish__row"><span class="dish__name" lang="it">${d.name}</span><span class="dish__dots"></span><span class="dish__price">${SITE.currency}${d.price}</span></span>
-          <span class="dish__desc" style="display:block">${d.desc[lang] || d.desc.en}</span>
-          ${tags ? `<span class="dish__tags">${tags}</span>` : ""}
-        </button>
-        <div class="dish__panel"><div><div class="dish__art"></div></div></div>`;
-      const btn = $(".dish__btn", li);
-      btn.addEventListener("click", () => {
-        const art = $(".dish__art", li);
-        if (!art.firstChild) {
-          const seed = 100 + i * 17 + (tab === "pasta" ? 500 : 0);
-          art.appendChild(tab === "pizza" ? makePizza({ seed, ...d.draw }).svg : makePasta({ seed, ...d.draw }).svg);
-        }
-        const open = !li.classList.contains("is-open");
-        $$(".dish.is-open", ul).forEach((o) => { o.classList.remove("is-open"); $(".dish__btn", o).setAttribute("aria-expanded", "false"); });
-        li.classList.toggle("is-open", open);
-        btn.setAttribute("aria-expanded", String(open));
+    const grid = $("[data-menu]");
+    grid.innerHTML = "";
+    const secs = SITE.menu;
+    // first two sections side by side (like Pizza | Pasta), the rest in rows of three
+    const rows = [secs.slice(0, 2)];
+    for (let i = 2; i < secs.length; i += 3) rows.push(secs.slice(i, i + 3));
+    let seed = 100;
+    rows.forEach((row) => {
+      const rowEl = document.createElement("div");
+      rowEl.className = `menu__row menu__row--${row.length >= 3 ? 3 : row.length}`;
+      row.forEach((sec, si) => {
+        const el = document.createElement("section");
+        el.className = "msec";
+        el.style.transitionDelay = `${si * 120}ms`;
+        el.innerHTML = `<div class="msec__head"><h3 class="banner">${esc(tr(sec.title))}</h3></div><ul class="msec__list"></ul>`;
+        const ul = $(".msec__list", el);
+        sec.items.forEach((it) => {
+          const s0 = seed++;
+          const li = document.createElement("li");
+          li.className = "mi" + (it.featured ? " mi--featured" : "");
+          const canDraw = it.draw && (sec.art === "pizza" || sec.art === "pasta");
+          const inner = `
+            <span class="mi__row"><span class="mi__name" lang="${typeof it.name === "string" ? "it" : lang}">${esc(tr(it.name))}</span><span class="mi__dots"></span><span class="mi__price">${it.price} ${SITE.currency}</span></span>
+            ${it.desc ? `<span class="mi__desc">(${esc(tr(it.desc))})</span>` : ""}`;
+          if (canDraw) {
+            li.innerHTML = `<button class="mi__btn" aria-expanded="false">${inner}</button><div class="mi__panel"><div><div class="mi__art"></div></div></div>`;
+            const btn = $(".mi__btn", li);
+            btn.addEventListener("click", () => {
+              const art = $(".mi__art", li);
+              if (!art.firstChild) art.appendChild(sec.art === "pizza" ? makePizza({ seed: s0, ...it.draw }).svg : makePasta({ seed: s0, ...it.draw }).svg);
+              const open = !li.classList.contains("is-open");
+              $$(".mi.is-open", ul).forEach((o) => { o.classList.remove("is-open"); $(".mi__btn", o).setAttribute("aria-expanded", "false"); });
+              li.classList.toggle("is-open", open);
+              btn.setAttribute("aria-expanded", String(open));
+            });
+          } else {
+            li.innerHTML = `<div class="mi__static">${inner}</div>`;
+          }
+          ul.appendChild(li);
+        });
+        rowEl.appendChild(el);
       });
-      ul.appendChild(li);
+      grid.appendChild(rowEl);
     });
-  }
-  function setupMenu() {
-    $$("[data-tab]").forEach((b) => b.addEventListener("click", () => {
-      tab = b.dataset.tab;
-      $$("[data-tab]").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
-      renderMenu();
-    }));
+    // fade sections in as they scroll into view
+    if (menuObserver) menuObserver.disconnect();
+    if (!("IntersectionObserver" in window) || reduced) { $$(".msec", grid).forEach((s) => s.classList.add("is-in")); return; }
+    menuObserver = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); menuObserver.unobserve(e.target); } }), { rootMargin: "0px 0px -10% 0px" });
+    $$(".msec", grid).forEach((s) => menuObserver.observe(s));
   }
 
   /* =========================================================
-     PHOTOS — polaroids you can drag around
+     PHOTOS
      ========================================================= */
-  const ROT = [-4, 3, -2, 5, -3, 2.5, -5, 4];
-  const CAMERA = `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M6 15h8l4-5h12l4 5h8v23H6z"/><circle cx="24" cy="26" r="7.5"/></svg>`;
-  const VIDEO = `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><rect x="5" y="12" width="28" height="24" rx="3"/><path d="M33 21l10-6v18l-10-6z"/></svg>`;
+  const ROT = [-3, 2, -1.5, 3, -2, 1.5, -3.5, 2.5];
+  const CAMERA = `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 15h8l4-5h12l4 5h8v23H6z"/><circle cx="24" cy="26" r="7.5"/></svg>`;
+  const VIDEO = `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="12" width="28" height="24" rx="3"/><path d="M33 21l10-6v18l-10-6z"/></svg>`;
   function renderPhotos() {
     const wall = $("[data-wall]");
     const keep = {};
@@ -547,14 +619,13 @@
       const fig = document.createElement("figure");
       fig.className = "polaroid";
       fig.dataset.i = i;
-      fig.style.margin = "0";
       fig.style.setProperty("--r", `${ROT[i % ROT.length]}deg`);
       if (keep[i]) { fig.style.setProperty("--x", keep[i][0]); fig.style.setProperty("--y", keep[i][1]); }
-      const cap = ph.caption[lang] || ph.caption.en;
+      const cap = esc(tr(ph.caption));
       let media;
       if (!ph.src) media = `<div class="polaroid__soon">${ph.type === "video" ? VIDEO : CAMERA}<span>${t(ph.type === "video" ? "photos.soonVideo" : "photos.soon")}</span></div>`;
-      else if (ph.type === "video") media = `<video src="${ph.src}" muted loop playsinline autoplay preload="metadata"></video>`;
-      else media = `<img src="${ph.src}" alt="${cap}" loading="lazy" draggable="false" />`;
+      else if (ph.type === "video") media = `<video src="${esc(ph.src)}" muted loop playsinline autoplay preload="metadata"></video>`;
+      else media = `<img src="${esc(ph.src)}" alt="${cap}" loading="lazy" draggable="false" />`;
       fig.innerHTML = `<div class="polaroid__media">${media}</div><figcaption class="polaroid__cap">${cap}</figcaption>`;
       enableDrag(fig, () => openPhoto(ph, cap, fig));
       wall.appendChild(fig);
@@ -591,12 +662,13 @@
   }
   function openPhoto(ph, cap, fig) {
     if (!ph.src) {
-      fig.animate([{ transform: getComputedStyle(fig).transform }, { transform: `${getComputedStyle(fig).transform} rotate(4deg)` }, { transform: `${getComputedStyle(fig).transform} rotate(-4deg)` }, { transform: getComputedStyle(fig).transform }], { duration: 400 });
+      const tf = getComputedStyle(fig).transform;
+      fig.animate([{ transform: tf }, { transform: `${tf} rotate(3deg)` }, { transform: `${tf} rotate(-3deg)` }, { transform: tf }], { duration: 400 });
       return;
     }
     const box = $("[data-lightbox]");
-    $("[data-lightbox-media]").innerHTML = ph.type === "video" ? `<video src="${ph.src}" controls autoplay playsinline></video>` : `<img src="${ph.src}" alt="${cap}" />`;
-    $("[data-lightbox-cap]").textContent = cap;
+    $("[data-lightbox-media]").innerHTML = ph.type === "video" ? `<video src="${esc(ph.src)}" controls autoplay playsinline></video>` : `<img src="${esc(ph.src)}" alt="${cap}" />`;
+    $("[data-lightbox-cap]").innerHTML = cap;
     box.showModal();
   }
   function setupLightbox() {
@@ -620,8 +692,7 @@
   }
   function renderHours() {
     const { day } = beirutNow();
-    const ul = $("[data-hours]");
-    ul.innerHTML = DAY_ORDER.map((d) => {
+    $("[data-hours]").innerHTML = DAY_ORDER.map((d) => {
       const h = SITE.hours[d];
       return `<li class="${d === day ? "is-today" : ""} ${h ? "" : "is-off"}"><span>${dayName(d)}</span><span>${h ? `${hhmm(h[0])} – ${hhmm(h[1])}` : t("visit.closed")}</span></li>`;
     }).join("");
@@ -653,6 +724,7 @@
     $$("[data-whatsapp]").forEach((a) => { a.href = wa; a.target = "_blank"; a.rel = "noopener"; });
     $$("[data-maps]").forEach((a) => (a.href = maps));
     const ig = $("[data-instagram]");
+    if (!ig) return;
     if (SITE.instagram) { ig.href = `https://instagram.com/${SITE.instagram}`; $("[data-insta-handle]").textContent = "@" + SITE.instagram; }
     else ig.remove();
   }
@@ -681,7 +753,6 @@
   hero();
   setupStory();
   setupPasta();
-  setupMenu();
   setupLightbox();
   $$("[data-lang]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
   $("[data-year]").textContent = new Date().getFullYear();
@@ -696,4 +767,5 @@
   addEventListener("resize", onScroll);
   setInterval(renderStatus, 60000);
   intro();
+  embers();
 })();

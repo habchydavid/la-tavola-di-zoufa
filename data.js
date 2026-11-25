@@ -4,7 +4,7 @@
    • Contact details, hours, menu, photos and all the text (EN / FR / AR).
    • You never need to touch index.html, styles.css or main.js to update
      the content.
-   • All details below are PLACEHOLDERS. Replace them with the real ones.
+   • Contact details and hours are still PLACEHOLDERS. Replace them.
    ===================================================================== */
 
 window.SITE = {
@@ -31,130 +31,91 @@ window.SITE = {
   currency: "$",
 
   /* ---------------- MENU ----------------
-     tags: "house" (house special), "spicy", "veg"
-     Pizza "draw" = how the little illustration looks:
-       sauce: "red" | "white"     cheese: true | false
-       toppings: basil, salami, chili, mushroom, olive, prosciutto, rucola,
-                 parm, sujuk, honey, garlic, oregano, gorgonzola
-     Pasta "draw":
-       sauce: "red" | "oil" | "cream" | "ragu"
-       extras: basil, parm, chili, garlic, parsley, pepper, bacon, meatballs
+     Each section has a title (EN / FR / AR) and a list of items.
+     • name: one text for all languages, or { en, fr, ar }
+     • price: number
+     • featured: true  → shown in gold, like on the printed menu
+     • desc: optional, { en, fr, ar }
+     • draw: optional. Pizza and pasta items with "draw" can be tapped
+       to show a little illustration.
+         pizza  sauce: "red" | "white" | "pesto"   cheese: true | false
+                toppings: basil, tomato, salami, chili, mushroom, olive,
+                          prosciutto, bresaola, rucola, parm, truffle,
+                          burrata, gorgonzola, sujuk, honey, garlic, oregano
+         pasta  sauce: "red" | "cream" | "pink" | "oil" | "ragu"
+                extras: basil, parm, chili, parsley, pepper, truffle,
+                        garlic, bacon, meatballs
   */
-  menu: {
-    pizza: [
-      {
-        name: "Margherita", price: 9, tags: ["veg"],
-        desc: {
-          en: "Tomato, fresh mozzarella, basil, olive oil.",
-          fr: "Tomate, mozzarella fraîche, basilic, huile d'olive.",
-          ar: "بندورة، موتزاريلا طازجة، حبق، زيت زيتون.",
+  menu: [
+    {
+      id: "pizza", art: "pizza",
+      title: { en: "Pizza", fr: "Pizza", ar: "بيتزا" },
+      items: [
+        { name: "Pizza Marguerita", price: 11, draw: { sauce: "red", cheese: true, toppings: ["basil", "tomato"] } },
+        { name: "Pizza Diavola", price: 13, draw: { sauce: "red", cheese: true, toppings: ["salami", "chili"] } },
+        { name: "Pizza Truffle", price: 15, draw: { sauce: "white", cheese: true, toppings: ["mushroom", "truffle"] } },
+        { name: "Pizza Regina", price: 14, draw: { sauce: "red", cheese: true, toppings: ["prosciutto", "mushroom", "olive"] } },
+        { name: "Pizza Quattro", price: 13, draw: { sauce: "white", cheese: true, toppings: ["gorgonzola", "parm"] } },
+        { name: "Pizza Burrata", price: 22, featured: true, draw: { sauce: "red", cheese: false, toppings: ["burrata", "tomato", "basil"] } },
+        { name: "Pizza Bresaola", price: 25, featured: true, draw: { sauce: "red", cheese: true, toppings: ["bresaola", "rucola", "parm"] } },
+        { name: "Pizza Pesto", price: 13, featured: true, draw: { sauce: "pesto", cheese: true, toppings: ["tomato", "basil"] } },
+      ],
+    },
+    {
+      id: "pasta", art: "pasta",
+      title: { en: "Pasta", fr: "Pâtes", ar: "باستا" },
+      items: [
+        { name: "Pasta Arrabiata", price: 9, draw: { sauce: "red", extras: ["chili", "parsley"] } },
+        { name: "Pasta Alfredo", price: 13, draw: { sauce: "cream", extras: ["parm", "parsley"] } },
+        { name: "Pasta Truffle", price: 14, draw: { sauce: "cream", extras: ["truffle", "parm"] } },
+        { name: "Pasta Gluten Free", price: 14, draw: { sauce: "red", extras: ["basil", "parm"] } },
+        { name: "Pasta Pink Sauce", price: 14, draw: { sauce: "pink", extras: ["parm", "basil"] } },
+      ],
+    },
+    {
+      id: "baguette",
+      title: { en: "Sandwich Baguette", fr: "Sandwich Baguette", ar: "سندويش باغيت" },
+      items: [
+        {
+          name: "Chicken Baguette", price: 7, featured: true,
+          desc: {
+            en: "Grilled chicken, lettuce, tomato, mozzarella, avocado sauce",
+            fr: "Poulet grillé, laitue, tomate, mozzarella, sauce avocat",
+            ar: "دجاج مشوي، خس، بندورة، موتزاريلا، صلصة أفوكادو",
+          },
         },
-        draw: { sauce: "red", cheese: true, toppings: ["basil"] },
-      },
-      {
-        name: "Marinara", price: 7, tags: ["veg"],
-        desc: {
-          en: "Tomato, garlic, oregano, olive oil. No cheese, the Naples original.",
-          fr: "Tomate, ail, origan, huile d'olive. Sans fromage, l'originale de Naples.",
-          ar: "بندورة، ثوم، أوريغانو، زيت زيتون. بدون جبنة، كما في نابولي.",
+        {
+          name: "Turkey Baguette", price: 5, featured: true,
+          desc: {
+            en: "Smoked turkey, lettuce, tomato, cheese, mayo mustard, pickles",
+            fr: "Dinde fumée, laitue, tomate, fromage, mayonnaise moutarde, cornichons",
+            ar: "حبش مدخّن، خس، بندورة، جبنة، مايونيز بالخردل، مخلل",
+          },
         },
-        draw: { sauce: "red", cheese: false, toppings: ["garlic", "oregano"] },
-      },
-      {
-        name: "Diavola", price: 11, tags: ["spicy"],
-        desc: {
-          en: "Tomato, mozzarella, spicy salami, fresh chili.",
-          fr: "Tomate, mozzarella, salami piquant, piment frais.",
-          ar: "بندورة، موتزاريلا، سلامي حار، فليفلة حارة.",
-        },
-        draw: { sauce: "red", cheese: true, toppings: ["salami", "chili"] },
-      },
-      {
-        name: "Funghi", price: 10, tags: ["veg"],
-        desc: {
-          en: "Tomato, mozzarella, sautéed mushrooms, parsley.",
-          fr: "Tomate, mozzarella, champignons sautés, persil.",
-          ar: "بندورة، موتزاريلا، فطر مقلي، بقدونس.",
-        },
-        draw: { sauce: "red", cheese: true, toppings: ["mushroom"] },
-      },
-      {
-        name: "Quattro Formaggi", price: 12, tags: ["veg"],
-        desc: {
-          en: "White base, mozzarella, gorgonzola, provolone, parmesan.",
-          fr: "Base blanche, mozzarella, gorgonzola, provolone, parmesan.",
-          ar: "قاعدة بيضاء، موتزاريلا، غورغونزولا، بروفولون، بارميزان.",
-        },
-        draw: { sauce: "white", cheese: true, toppings: ["gorgonzola", "parm"] },
-      },
-      {
-        name: "Prosciutto e Rucola", price: 13, tags: [],
-        desc: {
-          en: "Tomato, mozzarella, prosciutto, rocket, parmesan shavings.",
-          fr: "Tomate, mozzarella, prosciutto, roquette, copeaux de parmesan.",
-          ar: "بندورة، موتزاريلا، بروشوتو، جرجير، شرائح بارميزان.",
-        },
-        draw: { sauce: "red", cheese: true, toppings: ["prosciutto", "rucola", "parm"] },
-      },
-      {
-        name: "La Zoufa", price: 13, tags: ["house", "spicy"],
-        desc: {
-          en: "Our house pizza: tomato, mozzarella, sujuk, black olives, chili honey.",
-          fr: "La pizza de la maison : tomate, mozzarella, soujouk, olives noires, miel pimenté.",
-          ar: "بيتزا البيت: بندورة، موتزاريلا، سجق، زيتون أسود، عسل بالفليفلة الحارة.",
-        },
-        draw: { sauce: "red", cheese: true, toppings: ["sujuk", "olive", "honey"] },
-      },
-    ],
-
-    pasta: [
-      {
-        name: "Spaghetti al Pomodoro", price: 8, tags: ["veg"],
-        desc: {
-          en: "Slow-cooked tomato sauce, basil, parmesan.",
-          fr: "Sauce tomate mijotée, basilic, parmesan.",
-          ar: "صلصة بندورة مطبوخة على نار هادئة، حبق، بارميزان.",
-        },
-        draw: { sauce: "red", extras: ["basil", "parm"] },
-      },
-      {
-        name: "Aglio, Olio e Peperoncino", price: 8, tags: ["veg", "spicy"],
-        desc: {
-          en: "Garlic, olive oil, chili flakes, parsley.",
-          fr: "Ail, huile d'olive, piment, persil.",
-          ar: "ثوم، زيت زيتون، فليفلة حارة مجروشة، بقدونس.",
-        },
-        draw: { sauce: "oil", extras: ["garlic", "chili", "parsley"] },
-      },
-      {
-        name: "Carbonara", price: 11, tags: [],
-        desc: {
-          en: "Egg yolk, pecorino, crispy pancetta, black pepper. No cream.",
-          fr: "Jaune d'œuf, pecorino, pancetta croustillante, poivre noir. Sans crème.",
-          ar: "صفار بيض، جبنة بيكورينو، بانشيتا مقرمشة، فلفل أسود. بدون كريما.",
-        },
-        draw: { sauce: "cream", extras: ["bacon", "pepper", "parm"] },
-      },
-      {
-        name: "Bolognese", price: 11, tags: [],
-        desc: {
-          en: "Beef ragù, slow-cooked for hours, parmesan.",
-          fr: "Ragù de bœuf mijoté pendant des heures, parmesan.",
-          ar: "راغو لحم بقر مطبوخ لساعات، بارميزان.",
-        },
-        draw: { sauce: "ragu", extras: ["parm", "basil"] },
-      },
-      {
-        name: "Spaghetti della Nonna", price: 12, tags: ["house"],
-        desc: {
-          en: "Tomato sauce, homemade meatballs, basil. Just like grandma's.",
-          fr: "Sauce tomate, boulettes maison, basilic. Comme chez grand-mère.",
-          ar: "صلصة بندورة، كبب لحم بيتية، حبق. مثل طبخ التيتا.",
-        },
-        draw: { sauce: "red", extras: ["meatballs", "basil", "parm"] },
-      },
-    ],
-  },
+      ],
+    },
+    {
+      id: "dolci",
+      title: { en: "Dolci", fr: "Dolci", ar: "حلويات" },
+      items: [
+        { name: "Tiramisu", price: 10 },
+        { name: "Calzone Chocolate", price: 10 },
+      ],
+    },
+    {
+      id: "drink",
+      title: { en: "Drink", fr: "Boissons", ar: "مشروبات" },
+      items: [
+        { name: { en: "Water", fr: "Eau", ar: "مياه" }, price: 1 },
+        { name: "Pepsi", price: 2 },
+        { name: "Perrier", price: 3 },
+        { name: { en: "White wine", fr: "Vin blanc", ar: "نبيذ أبيض" }, price: 15 },
+        { name: { en: "Rosé wine", fr: "Vin rosé", ar: "نبيذ روزيه" }, price: 16 },
+        { name: { en: "Glass", fr: "Verre", ar: "كأس" }, price: 4 },
+        { name: { en: "Beer", fr: "Bière", ar: "بيرة" }, price: 3 },
+      ],
+    },
+  ],
 
   /* ---------------- PHOTOS ----------------
      Put your files in the /images folder and write the file name in "src",
@@ -164,9 +125,9 @@ window.SITE = {
   photos: [
     { src: "", type: "image", caption: { en: "The oven", fr: "Le four", ar: "الفرن" } },
     { src: "", type: "image", caption: { en: "Fresh out of the oven", fr: "Tout juste sortie du four", ar: "طالعة من الفرن" } },
-    { src: "", type: "image", caption: { en: "Our little dining room", fr: "Notre petite salle", ar: "صالتنا الصغيرة" } },
+    { src: "", type: "image", caption: { en: "Our dining room", fr: "Notre salle", ar: "صالتنا" } },
     { src: "", type: "video", caption: { en: "Stretching the dough", fr: "On étire la pâte", ar: "فرد العجينة" } },
-    { src: "", type: "image", caption: { en: "Spaghetti night", fr: "Soirée spaghetti", ar: "سهرة سباغيتي" } },
+    { src: "", type: "image", caption: { en: "Pasta night", fr: "Soirée pâtes", ar: "سهرة باستا" } },
     { src: "", type: "image", caption: { en: "Main road at sunset", fr: "La route principale au coucher du soleil", ar: "الطريق العام وقت الغروب" } },
   ],
 };
@@ -174,10 +135,9 @@ window.SITE = {
 /* ---------------- ALL THE TEXT ON THE SITE ---------------- */
 window.TEXT = {
   en: {
-    "intro.kicker": "Pizzeria · Spaghetteria",
+    "brand.sub": "Italian Restaurant",
     "nav.story": "Our pizza", "nav.menu": "Menu", "nav.photos": "Photos", "nav.visit": "Visit",
-    "hero.kicker": "Pizzeria · Spaghetteria",
-    "hero.tagline": "Neapolitan pizza & Italian spaghetti, on the main road of Deir al Ahmar.",
+    "hero.tagline": "Neapolitan pizza & Italian pasta, on the main road of Deir al Ahmar.",
     "hero.cta1": "See the menu",
     "hero.cta2": "Order on WhatsApp",
 
@@ -194,19 +154,16 @@ window.TEXT = {
     "story.s5t": "The finish",
     "story.s5p": "Fresh basil and a drizzle of olive oil, then straight to your table.",
 
-    "pasta.eyebrow": "And the spaghetti",
+    "pasta.eyebrow": "And the pasta",
     "pasta.title": "Twirl it like Nonna.",
-    "pasta.text": "Spaghetti cooked al dente, then tossed in the pan with the sauce so every strand is coated.",
+    "pasta.text": "Pasta cooked al dente, then tossed in the pan with the sauce so every strand is coated.",
     "pasta.hint": "Keep scrolling to twirl ↓",
 
     "menu.eyebrow": "The menu",
-    "menu.sub": "What's cooking today",
-    "menu.pizza": "Pizza", "menu.pasta": "Pasta",
-    "menu.hint": "Tap a dish to take a look",
+    "menu.hint": "Tap a pizza or pasta to see it",
     "menu.note": "Prices in US dollars.",
-    "tag.house": "House special", "tag.spicy": "Spicy", "tag.veg": "Vegetarian",
 
-    "photos.eyebrow": "On the wall",
+    "photos.eyebrow": "Gallery",
     "photos.title": "Snapshots from the kitchen",
     "photos.hint": "Drag them around, or click one to open it",
     "photos.hintTouch": "Tap a photo to open it",
@@ -231,10 +188,9 @@ window.TEXT = {
   },
 
   fr: {
-    "intro.kicker": "Pizzeria · Spaghetteria",
+    "brand.sub": "Restaurant italien",
     "nav.story": "Notre pizza", "nav.menu": "Menu", "nav.photos": "Photos", "nav.visit": "Nous trouver",
-    "hero.kicker": "Pizzeria · Spaghetteria",
-    "hero.tagline": "Pizza napolitaine et spaghetti à l'italienne, sur la route principale de Deir el Ahmar.",
+    "hero.tagline": "Pizza napolitaine et pâtes italiennes, sur la route principale de Deir el Ahmar.",
     "hero.cta1": "Voir le menu",
     "hero.cta2": "Commander sur WhatsApp",
 
@@ -251,19 +207,16 @@ window.TEXT = {
     "story.s5t": "La touche finale",
     "story.s5p": "Du basilic frais et un filet d'huile d'olive, puis directement à votre table.",
 
-    "pasta.eyebrow": "Et les spaghetti",
+    "pasta.eyebrow": "Et les pâtes",
     "pasta.title": "Enroulez-les comme Nonna.",
-    "pasta.text": "Des spaghetti al dente, sautés à la poêle avec la sauce pour bien enrober chaque brin.",
+    "pasta.text": "Des pâtes al dente, sautées à la poêle avec la sauce pour bien enrober chaque brin.",
     "pasta.hint": "Continuez à défiler ↓",
 
     "menu.eyebrow": "La carte",
-    "menu.sub": "Au menu aujourd'hui",
-    "menu.pizza": "Pizzas", "menu.pasta": "Pâtes",
-    "menu.hint": "Touchez un plat pour le voir",
+    "menu.hint": "Touchez une pizza ou des pâtes pour les voir",
     "menu.note": "Prix en dollars américains.",
-    "tag.house": "Spécialité", "tag.spicy": "Épicé", "tag.veg": "Végétarien",
 
-    "photos.eyebrow": "Au mur",
+    "photos.eyebrow": "Galerie",
     "photos.title": "Instantanés de la cuisine",
     "photos.hint": "Déplacez-les, ou cliquez pour les ouvrir",
     "photos.hintTouch": "Touchez une photo pour l'ouvrir",
@@ -288,10 +241,9 @@ window.TEXT = {
   },
 
   ar: {
-    "intro.kicker": "بيتزا · سباغيتي",
+    "brand.sub": "مطعم إيطالي",
     "nav.story": "البيتزا", "nav.menu": "القائمة", "nav.photos": "الصور", "nav.visit": "زورونا",
-    "hero.kicker": "بيتزا · سباغيتي",
-    "hero.tagline": "بيتزا نابوليتانية وسباغيتي إيطالية، على الطريق العام في دير الأحمر.",
+    "hero.tagline": "بيتزا نابوليتانية وباستا إيطالية، على الطريق العام في دير الأحمر.",
     "hero.cta1": "تصفّح القائمة",
     "hero.cta2": "اطلب عبر واتساب",
 
@@ -308,19 +260,16 @@ window.TEXT = {
     "story.s5t": "اللمسة الأخيرة",
     "story.s5p": "حبق طازج ورشّة زيت زيتون، ثم مباشرة إلى طاولتك.",
 
-    "pasta.eyebrow": "والسباغيتي",
+    "pasta.eyebrow": "والباستا",
     "pasta.title": "لفّها على الشوكة مثل تيتا.",
-    "pasta.text": "سباغيتي مطبوخة al dente، ثم تُقلَّب في المقلاة مع الصلصة حتى يتغطّى كل خيط منها.",
+    "pasta.text": "باستا مطبوخة al dente، ثم تُقلَّب في المقلاة مع الصلصة حتى يتغطّى كل خيط منها.",
     "pasta.hint": "تابع النزول لتلفّها ↓",
 
     "menu.eyebrow": "القائمة",
-    "menu.sub": "ماذا نطبخ اليوم",
-    "menu.pizza": "بيتزا", "menu.pasta": "باستا",
-    "menu.hint": "اضغط على أي طبق لتراه",
+    "menu.hint": "اضغط على أي بيتزا أو باستا لتراها",
     "menu.note": "الأسعار بالدولار الأميركي.",
-    "tag.house": "طبق البيت", "tag.spicy": "حار", "tag.veg": "نباتي",
 
-    "photos.eyebrow": "على الحائط",
+    "photos.eyebrow": "الصور",
     "photos.title": "لقطات من المطبخ",
     "photos.hint": "حرّكها كما تشاء، أو اضغط لفتحها",
     "photos.hintTouch": "اضغط على صورة لفتحها",

@@ -3,33 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>La Tavola di Zoufa — Pizzeria · Spaghetteria</title>
-  <meta name="description" content="Neapolitan pizza & Italian spaghetti on the main road of Deir al Ahmar." />
-  <meta name="theme-color" content="#c8321f" />
+  <title>La Tavola di Zoufa</title>
+  <meta name="description" content="La Tavola di Zoufa, Italian restaurant on the main road of Deir al Ahmar. Neapolitan pizza, pasta, baguettes and dolci." />
+  <meta name="theme-color" content="#0b0a09" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Lalezar&family=Pacifico&family=Shrikhand&family=Tajawal:wght@400;500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="is-intro">
 
-  <!-- Shared gradients & filters for every illustrated pizza and plate -->
+  <!-- Shared gradients, filters and the gold flourish -->
   <svg class="defs" aria-hidden="true" focusable="false">
     <defs>
       <radialGradient id="g-crust"><stop offset="0" stop-color="#f2cd8c"/><stop offset=".8" stop-color="#e5ab63"/><stop offset=".93" stop-color="#bd7631"/><stop offset="1" stop-color="#7a4318"/></radialGradient>
       <radialGradient id="g-dough"><stop offset="0" stop-color="#fbf2de"/><stop offset=".86" stop-color="#f3e2bf"/><stop offset="1" stop-color="#dcc193"/></radialGradient>
       <radialGradient id="g-sauce"><stop offset="0" stop-color="#e34a2c"/><stop offset=".72" stop-color="#c62f1c"/><stop offset="1" stop-color="#921e12"/></radialGradient>
       <radialGradient id="g-white"><stop offset="0" stop-color="#fff7e4"/><stop offset=".8" stop-color="#f6e5bf"/><stop offset="1" stop-color="#e5c78d"/></radialGradient>
+      <radialGradient id="g-pesto"><stop offset="0" stop-color="#7fa23a"/><stop offset=".75" stop-color="#5b7f26"/><stop offset="1" stop-color="#3d5a17"/></radialGradient>
       <radialGradient id="g-cheese" cx=".4" cy=".35"><stop offset="0" stop-color="#fffbf2"/><stop offset=".6" stop-color="#f9edc9"/><stop offset="1" stop-color="#eacd8a"/></radialGradient>
+      <radialGradient id="g-burrata" cx=".4" cy=".35"><stop offset="0" stop-color="#ffffff"/><stop offset=".65" stop-color="#f7f3ea"/><stop offset="1" stop-color="#ddd3bd"/></radialGradient>
       <radialGradient id="g-gorgo" cx=".4" cy=".35"><stop offset="0" stop-color="#fbf7ec"/><stop offset="1" stop-color="#d9d3bd"/></radialGradient>
       <radialGradient id="g-salami" cx=".45" cy=".4"><stop offset="0" stop-color="#cb432b"/><stop offset=".72" stop-color="#a3271a"/><stop offset="1" stop-color="#5c140b"/></radialGradient>
       <radialGradient id="g-sujuk" cx=".45" cy=".4"><stop offset="0" stop-color="#9b3a22"/><stop offset=".75" stop-color="#6e2413"/><stop offset="1" stop-color="#3b1108"/></radialGradient>
+      <radialGradient id="g-tomato" cx=".4" cy=".35"><stop offset="0" stop-color="#ff6b4a"/><stop offset=".7" stop-color="#d92b1a"/><stop offset="1" stop-color="#8f140b"/></radialGradient>
       <linearGradient id="g-basil" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9b40"/><stop offset="1" stop-color="#22511b"/></linearGradient>
       <linearGradient id="g-rucola" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#83b24c"/><stop offset="1" stop-color="#3c6c25"/></linearGradient>
       <linearGradient id="g-mush" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a68560"/><stop offset=".45" stop-color="#e9dac0"/><stop offset="1" stop-color="#cdb592"/></linearGradient>
       <radialGradient id="g-olive" cx=".35" cy=".35"><stop offset="0" stop-color="#4b443d"/><stop offset="1" stop-color="#110e0c"/></radialGradient>
       <linearGradient id="g-pros" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eba49c"/><stop offset="1" stop-color="#c55c59"/></linearGradient>
+      <linearGradient id="g-bresaola" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a5323a"/><stop offset="1" stop-color="#5e121a"/></linearGradient>
+      <linearGradient id="g-truffle" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b5240"/><stop offset="1" stop-color="#2e211a"/></linearGradient>
       <radialGradient id="g-meat" cx=".38" cy=".35"><stop offset="0" stop-color="#8d4a2c"/><stop offset=".8" stop-color="#5a2a15"/><stop offset="1" stop-color="#3a1a0c"/></radialGradient>
       <radialGradient id="g-plate" cx=".45" cy=".4"><stop offset="0" stop-color="#ffffff"/><stop offset=".75" stop-color="#f7f1e6"/><stop offset="1" stop-color="#e5dccb"/></radialGradient>
       <linearGradient id="g-steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8f969c"/><stop offset=".45" stop-color="#f4f6f7"/><stop offset=".6" stop-color="#d5dadd"/><stop offset="1" stop-color="#7d848a"/></linearGradient>
@@ -37,24 +42,33 @@
       <filter id="f-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#2a0c04" flood-opacity=".4"/></filter>
       <filter id="f-soft"><feGaussianBlur stdDeviation="2.4"/></filter>
       <filter id="f-softer" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+      <symbol id="flourish" viewBox="0 0 240 28">
+        <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <path d="M6 14H84M156 14H234"/>
+          <path d="M120 14C112 5 100 4 95 9C91 13 94 19 99 18C103 17 103 12 99 12"/>
+          <path d="M120 14C128 5 140 4 145 9C149 13 146 19 141 18C137 17 137 12 141 12"/>
+          <path d="M120 14C112 22 100 24 91 19M120 14C128 22 140 24 149 19"/>
+        </g>
+        <circle cx="87" cy="14" r="1.8" fill="currentColor"/><circle cx="153" cy="14" r="1.8" fill="currentColor"/>
+        <path d="M120 6L125 14L120 22L115 14Z" fill="currentColor"/>
+      </symbol>
     </defs>
   </svg>
 
-  <!-- INTRO: neon sign flickers on, shutter rolls up -->
+  <!-- INTRO -->
   <div class="intro" data-intro aria-hidden="true">
-    <div class="intro__shutter">
-      <div class="neon neon--intro">
-        <span class="neon__script" data-site-name-script>La Tavola</span>
-        <span class="neon__sub">di Zoufa</span>
-      </div>
-      <p class="intro__small" data-i18n="intro.kicker">Pizzeria · Spaghetteria</p>
-      <div class="intro__handle"></div>
+    <div class="intro__glow"></div>
+    <div class="intro__inner">
+      <p class="brand"><span class="brand__a">La Tavola di</span><span class="brand__b">Zoufa</span></p>
+      <svg class="flourish"><use href="#flourish"/></svg>
+      <p class="brand-sub" data-i18n="brand.sub">Italian Restaurant</p>
+      <div class="tricolor"></div>
     </div>
   </div>
 
   <!-- NAV -->
-  <header class="nav" data-nav>
-    <a href="#top" class="nav__logo"><span class="nav__logo-a">La Tavola</span> <span class="nav__logo-b">di Zoufa</span></a>
+  <header class="nav">
+    <a href="#top" class="nav__logo"><span>La Tavola di</span> <b>Zoufa</b></a>
     <nav class="nav__links" aria-label="Sections">
       <a href="#story" data-i18n="nav.story">Our pizza</a>
       <a href="#menu" data-i18n="nav.menu">Menu</a>
@@ -72,48 +86,36 @@
 
     <!-- HERO -->
     <section class="hero">
-      <div class="awning" aria-hidden="true"></div>
+      <div class="hero__fire" aria-hidden="true"></div>
+      <canvas class="embers" data-embers aria-hidden="true"></canvas>
 
       <div class="hero__content">
-        <p class="hero__kicker" data-i18n="hero.kicker">Pizzeria · Spaghetteria</p>
-        <h1 class="hero__title">
-          <span class="hero__title-a" data-split>La Tavola</span>
-          <span class="hero__title-b">di Zoufa</span>
+        <h1 class="brand brand--hero">
+          <span class="brand__a" data-split>La Tavola di</span>
+          <span class="brand__b" data-split>Zoufa</span>
         </h1>
-        <p class="hero__tagline" data-i18n="hero.tagline">Neapolitan pizza &amp; Italian spaghetti, on the main road of Deir al Ahmar.</p>
+        <svg class="flourish flourish--draw" aria-hidden="true"><use href="#flourish"/></svg>
+        <p class="brand-sub" data-i18n="brand.sub">Italian Restaurant</p>
+        <div class="tricolor" aria-hidden="true"></div>
+        <p class="hero__tagline" data-i18n="hero.tagline">Neapolitan pizza &amp; Italian pasta, on the main road of Deir al Ahmar.</p>
         <div class="hero__cta">
-          <a href="#menu" class="btn btn--red" data-i18n="hero.cta1">See the menu</a>
-          <a href="#" class="btn btn--cream" data-whatsapp><span class="wa-icon" aria-hidden="true"></span><span data-i18n="hero.cta2">Order on WhatsApp</span></a>
+          <a href="#menu" class="btn btn--gold" data-i18n="hero.cta1">See the menu</a>
+          <a href="#" class="btn btn--ghost" data-whatsapp><span class="wa-icon" aria-hidden="true"></span><span data-i18n="hero.cta2">Order on WhatsApp</span></a>
         </div>
       </div>
 
-      <div class="badge" aria-hidden="true">
-        <svg viewBox="0 0 200 200">
-          <defs><path id="badge-circle" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
-          <circle cx="100" cy="100" r="96" class="badge__bg"/>
-          <circle cx="100" cy="100" r="88" class="badge__ring"/>
-          <text><textPath href="#badge-circle">PIZZA NAPOLETANA ✦ SPAGHETTI ✦ DEIR AL AHMAR ✦</textPath></text>
-        </svg>
-        <span class="badge__center">🍝</span>
-      </div>
-
-      <div class="table" aria-hidden="true">
-        <div class="table__steam"><i></i><i></i><i></i></div>
-        <div class="table__plane">
-          <div class="table__cloth"></div>
-          <div class="table__plate"><div class="table__pizza" data-hero-pizza></div></div>
-        </div>
+      <div class="hero__stage" aria-hidden="true">
+        <div class="hero__steam"><i></i><i></i><i></i></div>
+        <div class="hero__board"><div class="hero__pizza" data-hero-pizza></div></div>
       </div>
     </section>
 
     <!-- RIBBON -->
-    <div class="ribbon-wrap" aria-hidden="true">
-    <div class="ribbon">
+    <div class="ribbon" aria-hidden="true">
       <div class="ribbon__track">
-        <span>Pizza Napoletana</span><b>✦</b><span>Spaghetti</span><b>✦</b><span>Mozzarella fresca</span><b>✦</b><span>Pomodoro</span><b>✦</b><span>Basilico</span><b>✦</b><span>Fatto a mano</span><b>✦</b>
-        <span>Pizza Napoletana</span><b>✦</b><span>Spaghetti</span><b>✦</b><span>Mozzarella fresca</span><b>✦</b><span>Pomodoro</span><b>✦</b><span>Basilico</span><b>✦</b><span>Fatto a mano</span><b>✦</b>
+        <span>Pizza Napoletana</span><b>◆</b><span>Pasta fresca</span><b>◆</b><span>Mozzarella</span><b>◆</b><span>Pomodoro</span><b>◆</b><span>Basilico</span><b>◆</b><span>Tiramisù</span><b>◆</b>
+        <span>Pizza Napoletana</span><b>◆</b><span>Pasta fresca</span><b>◆</b><span>Mozzarella</span><b>◆</b><span>Pomodoro</span><b>◆</b><span>Basilico</span><b>◆</b><span>Tiramisù</span><b>◆</b>
       </div>
-    </div>
     </div>
 
     <!-- STORY: a pizza builds itself as you scroll -->
@@ -133,57 +135,56 @@
         <div class="story__copy">
           <p class="eyebrow" data-i18n="story.eyebrow">How it's made</p>
           <ol class="steps" data-steps>
-            <li class="is-active"><span class="steps__n">1</span><h3 data-i18n="story.s1t">The dough</h3><p data-i18n="story.s1p"></p></li>
-            <li><span class="steps__n">2</span><h3 data-i18n="story.s2t">The tomato</h3><p data-i18n="story.s2p"></p></li>
-            <li><span class="steps__n">3</span><h3 data-i18n="story.s3t">The mozzarella</h3><p data-i18n="story.s3p"></p></li>
-            <li><span class="steps__n">4</span><h3 data-i18n="story.s4t">The oven</h3><p data-i18n="story.s4p"></p></li>
-            <li><span class="steps__n">5</span><h3 data-i18n="story.s5t">The finish</h3><p data-i18n="story.s5p"></p></li>
+            <li class="is-active"><span class="steps__n">I</span><h3 data-i18n="story.s1t">The dough</h3><p data-i18n="story.s1p"></p></li>
+            <li><span class="steps__n">II</span><h3 data-i18n="story.s2t">The tomato</h3><p data-i18n="story.s2p"></p></li>
+            <li><span class="steps__n">III</span><h3 data-i18n="story.s3t">The mozzarella</h3><p data-i18n="story.s3p"></p></li>
+            <li><span class="steps__n">IV</span><h3 data-i18n="story.s4t">The oven</h3><p data-i18n="story.s4p"></p></li>
+            <li><span class="steps__n">V</span><h3 data-i18n="story.s5t">The finish</h3><p data-i18n="story.s5p"></p></li>
           </ol>
-          <div class="dots" aria-hidden="true" data-story-dots><i class="is-active"></i><i></i><i></i><i></i><i></i></div>
+          <div class="dots" aria-hidden="true" data-story-dots><i></i><i></i><i></i><i></i><i></i></div>
         </div>
       </div>
     </section>
 
-    <!-- PASTA: twirl the spaghetti as you scroll -->
+    <!-- PASTA: twirl as you scroll -->
     <section class="pasta" data-pasta>
       <div class="pasta__sticky">
         <div class="pasta__copy">
-          <p class="eyebrow" data-i18n="pasta.eyebrow">And the spaghetti</p>
+          <p class="eyebrow" data-i18n="pasta.eyebrow">And the pasta</p>
           <h2 class="title" data-i18n="pasta.title">Twirl it like Nonna.</h2>
           <p class="lede" data-i18n="pasta.text"></p>
           <p class="pasta__hint" data-i18n="pasta.hint">Keep scrolling to twirl ↓</p>
         </div>
         <div class="pasta__stage">
-          <div class="pasta__cloth" aria-hidden="true"></div>
+          <div class="pasta__board" aria-hidden="true"></div>
           <div class="pasta__plate" data-pasta-plate aria-hidden="true"></div>
         </div>
       </div>
     </section>
 
-    <!-- MENU -->
+    <!-- MENU (styled like the printed menu board) -->
     <section class="menu" id="menu">
-      <div class="menu__card">
-        <div class="menu__head">
+      <div class="menu__board">
+        <header class="menu__head">
           <p class="eyebrow" data-i18n="menu.eyebrow">The menu</p>
-          <h2 class="menu__title">Menù</h2>
-          <p class="menu__sub" data-i18n="menu.sub">What's cooking today</p>
-        </div>
-        <div class="tabs" role="tablist" aria-label="Menu">
-          <button role="tab" aria-selected="true" data-tab="pizza" data-i18n="menu.pizza">Pizza</button>
-          <button role="tab" aria-selected="false" data-tab="pasta" data-i18n="menu.pasta">Pasta</button>
-        </div>
-        <p class="menu__hint" data-i18n="menu.hint">Tap a dish to take a look</p>
-        <ul class="dishes" data-dishes></ul>
+          <h2 class="brand brand--menu"><span class="brand__a">La Tavola di</span><span class="brand__b">Zoufa</span></h2>
+          <svg class="flourish" aria-hidden="true"><use href="#flourish"/></svg>
+          <p class="brand-sub" data-i18n="brand.sub">Italian Restaurant</p>
+          <div class="tricolor" aria-hidden="true"></div>
+          <p class="menu__hint" data-i18n="menu.hint">Tap a pizza or pasta to see it</p>
+        </header>
+        <div class="menu__grid" data-menu></div>
         <p class="menu__note" data-i18n="menu.note">Prices in US dollars.</p>
       </div>
     </section>
 
     <!-- PHOTOS -->
     <section class="photos" id="photos">
-      <header class="photos__head">
-        <p class="eyebrow" data-i18n="photos.eyebrow">On the wall</p>
+      <header class="section-head">
+        <p class="eyebrow" data-i18n="photos.eyebrow">Gallery</p>
         <h2 class="title" data-i18n="photos.title">Snapshots from the kitchen</h2>
-        <p class="photos__hint" data-i18n="photos.hint">Drag them around</p>
+        <svg class="flourish" aria-hidden="true"><use href="#flourish"/></svg>
+        <p class="photos__hint"></p>
       </header>
       <div class="wall" data-wall></div>
     </section>
@@ -214,27 +215,27 @@
 
         <div class="card card--contact">
           <h4 data-i18n="visit.contact">Call or message</h4>
-          <a class="btn btn--red btn--block" href="#" data-call><span data-i18n="visit.call">Call us</span> · <span data-phone dir="ltr"></span></a>
+          <a class="btn btn--gold btn--block" href="#" data-call><span data-i18n="visit.call">Call us</span>&nbsp;·&nbsp;<span data-phone dir="ltr"></span></a>
           <a class="btn btn--green btn--block" href="#" data-whatsapp target="_blank" rel="noopener"><span class="wa-icon" aria-hidden="true"></span> WhatsApp</a>
           <a class="link" href="#" data-instagram target="_blank" rel="noopener"><span data-insta-handle dir="ltr"></span></a>
         </div>
 
         <a class="map" href="#" data-maps target="_blank" rel="noopener" aria-label="Map">
           <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <rect width="400" height="260" fill="#efe3c8"/>
-            <g stroke="#e2d2ad" stroke-width="1">
+            <rect width="400" height="260" fill="#17130f"/>
+            <g stroke="#221c17" stroke-width="1">
               <path d="M0 40h400M0 90h400M0 140h400M0 190h400M0 240h400M50 0v260M120 0v260M190 0v260M260 0v260M330 0v260"/>
             </g>
-            <path d="M-10 210 C 90 180, 140 120, 210 130 S 330 90, 420 40" stroke="#fffaf0" stroke-width="22" fill="none" stroke-linecap="round"/>
-            <path d="M-10 210 C 90 180, 140 120, 210 130 S 330 90, 420 40" stroke="#e0a530" stroke-width="2" stroke-dasharray="10 9" fill="none"/>
-            <path d="M120 260 C 150 200, 170 170, 205 132" stroke="#fffaf0" stroke-width="10" fill="none"/>
-            <path d="M250 0 C 250 60, 240 100, 230 128" stroke="#fffaf0" stroke-width="8" fill="none"/>
-            <circle cx="80" cy="70" r="22" fill="#cfdcae"/><circle cx="330" cy="200" r="34" fill="#cfdcae"/><circle cx="355" cy="160" r="18" fill="#cfdcae"/>
+            <circle cx="80" cy="70" r="22" fill="#1c2418"/><circle cx="330" cy="200" r="34" fill="#1c2418"/><circle cx="355" cy="160" r="18" fill="#1c2418"/>
+            <path d="M-10 210 C 90 180, 140 120, 210 130 S 330 90, 420 40" stroke="#2e2620" stroke-width="22" fill="none" stroke-linecap="round"/>
+            <path d="M-10 210 C 90 180, 140 120, 210 130 S 330 90, 420 40" stroke="#e6be5a" stroke-width="1.6" stroke-dasharray="10 9" fill="none"/>
+            <path d="M120 260 C 150 200, 170 170, 205 132" stroke="#2e2620" stroke-width="10" fill="none"/>
+            <path d="M250 0 C 250 60, 240 100, 230 128" stroke="#2e2620" stroke-width="8" fill="none"/>
             <text x="60" y="232" class="map__road" transform="rotate(-14 60 232)">Main Road</text>
             <g class="map__pin" transform="translate(212 124)">
-              <ellipse cx="0" cy="4" rx="10" ry="4" fill="#000" opacity=".2"/>
-              <path d="M0 2 C -16 -16, -18 -24, -18 -32 a18 18 0 0 1 36 0 c0 8 -2 16 -18 34z" fill="#c8321f"/>
-              <circle cx="0" cy="-32" r="7" fill="#fff"/>
+              <ellipse cx="0" cy="4" rx="10" ry="4" fill="#000" opacity=".4"/>
+              <path d="M0 2 C -16 -16, -18 -24, -18 -32 a18 18 0 0 1 36 0 c0 8 -2 16 -18 34z" fill="#c01e26"/>
+              <circle cx="0" cy="-32" r="7" fill="#e6be5a"/>
             </g>
           </svg>
           <span class="map__label">Deir al Ahmar</span>
@@ -244,16 +245,15 @@
   </main>
 
   <footer class="footer">
-    <div class="footer__check" aria-hidden="true"></div>
-    <p class="footer__name"><span>La Tavola</span> di Zoufa</p>
+    <div class="tricolor tricolor--full" aria-hidden="true"></div>
+    <p class="brand brand--footer"><span class="brand__a">La Tavola di</span> <span class="brand__b">Zoufa</span></p>
+    <svg class="flourish" aria-hidden="true"><use href="#flourish"/></svg>
     <p class="footer__love" data-i18n="footer.love">Made with love, tomatoes and a lot of mozzarella.</p>
     <p class="footer__copy">© <span data-year></span> La Tavola di Zoufa · Deir al Ahmar</p>
   </footer>
 
-  <!-- Floating WhatsApp (phones) -->
   <a class="fab" href="#" data-whatsapp target="_blank" rel="noopener" aria-label="WhatsApp"><span class="wa-icon" aria-hidden="true"></span></a>
 
-  <!-- Photo lightbox -->
   <dialog class="lightbox" data-lightbox>
     <button class="lightbox__close" data-close aria-label="Close">×</button>
     <div class="lightbox__media" data-lightbox-media></div>
