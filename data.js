@@ -30,6 +30,16 @@ window.SITE = {
 
   currency: "$",
 
+  /* ---------------- "HOW IT'S MADE" VIDEO ----------------
+     steps: the second (in the video) where each of the 5 steps starts:
+     dough, tomato, mozzarella, oven, finish.
+  */
+  storyVideo: {
+    src: "images/how-its-made.mp4",
+    poster: "images/how-its-made.jpg",
+    steps: [0, 4.1, 5.07, 8.13, 11.23],
+  },
+
   /* ---------------- MENU ----------------
      Each section has a title (EN / FR / AR) and a list of items.
      • name: one text for all languages, or { en, fr, ar }
@@ -148,11 +158,12 @@ window.TEXT = {
     "story.s2t": "The tomato",
     "story.s2p": "Ripe tomatoes crushed with a pinch of salt. That's all. Good tomatoes don't need help.",
     "story.s3t": "The mozzarella",
-    "story.s3p": "Soft, milky mozzarella, torn by hand and scattered across the pizza.",
+    "story.s3p": "A generous handful of mozzarella, scattered all the way to the edge.",
     "story.s4t": "The oven",
     "story.s4p": "Into our gas oven at 450°C. In about ninety seconds the crust puffs up and gets its golden, blistered edge.",
     "story.s5t": "The finish",
-    "story.s5p": "Fresh basil and a drizzle of olive oil, then straight to your table.",
+    "story.s5p": "Sliced, topped with fresh basil, and straight to your table.",
+    "story.soundOn": "Sound on", "story.soundOff": "Sound off",
 
     "pasta.eyebrow": "And the pasta",
     "pasta.title": "Twirl it like Nonna.",
@@ -201,11 +212,12 @@ window.TEXT = {
     "story.s2t": "La tomate",
     "story.s2p": "Des tomates mûres écrasées avec une pincée de sel. C'est tout. Une bonne tomate n'a besoin de rien d'autre.",
     "story.s3t": "La mozzarella",
-    "story.s3p": "Une mozzarella fondante, déchirée à la main et répartie sur la pizza.",
+    "story.s3p": "Une belle poignée de mozzarella, répartie jusqu'au bord.",
     "story.s4t": "Le four",
     "story.s4p": "Direction notre four à gaz, à 450 °C. En quatre-vingt-dix secondes environ, la croûte gonfle et se dore.",
     "story.s5t": "La touche finale",
-    "story.s5p": "Du basilic frais et un filet d'huile d'olive, puis directement à votre table.",
+    "story.s5p": "Découpée, garnie de basilic frais, et directement à votre table.",
+    "story.soundOn": "Activer le son", "story.soundOff": "Couper le son",
 
     "pasta.eyebrow": "Et les pâtes",
     "pasta.title": "Enroulez-les comme Nonna.",
@@ -254,11 +266,12 @@ window.TEXT = {
     "story.s2t": "البندورة",
     "story.s2p": "بندورة ناضجة مهروسة مع رشّة ملح. هذا كل شيء. البندورة الطيبة لا تحتاج إلى شيء آخر.",
     "story.s3t": "الموتزاريلا",
-    "story.s3p": "موتزاريلا طرية، نقطّعها باليد ونوزّعها على البيتزا.",
+    "story.s3p": "كمية سخية من الموتزاريلا، موزّعة حتى الأطراف.",
     "story.s4t": "الفرن",
     "story.s4p": "إلى فرن الغاز على حرارة ٤٥٠ درجة. خلال تسعين ثانية تقريباً تنتفخ الأطراف وتصبح ذهبية ومقرمشة.",
     "story.s5t": "اللمسة الأخيرة",
-    "story.s5p": "حبق طازج ورشّة زيت زيتون، ثم مباشرة إلى طاولتك.",
+    "story.s5p": "تُقطَّع، يُضاف إليها الحبق الطازج، ثم مباشرة إلى طاولتك.",
+    "story.soundOn": "شغّل الصوت", "story.soundOff": "اكتم الصوت",
 
     "pasta.eyebrow": "والباستا",
     "pasta.title": "لفّها على الشوكة مثل تيتا.",

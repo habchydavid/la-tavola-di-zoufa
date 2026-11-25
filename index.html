@@ -118,19 +118,13 @@
       </div>
     </div>
 
-    <!-- STORY: a pizza builds itself as you scroll -->
+    <!-- STORY: the real video, with the steps following along -->
     <section class="story" id="story" data-story>
-      <div class="story__sticky">
-        <div class="story__stage">
-          <div class="oven" aria-hidden="true">
-            <div class="oven__mouth"><div class="oven__flames" data-flames></div></div>
-          </div>
-          <div class="story__peel" aria-hidden="true"></div>
-          <div class="story__pizza" data-story-pizza aria-hidden="true"></div>
-          <div class="gauges">
-            <div class="gauge"><span data-i18n="story.oven">Oven</span><b><span data-temp>20</span>°C</b></div>
-            <div class="gauge"><span data-i18n="story.time">Time</span><b data-time>0:00</b></div>
-          </div>
+      <div class="story__inner">
+        <div class="film">
+          <video class="film__video" data-film muted loop playsinline preload="metadata" aria-label="How we make our pizza"></video>
+          <button class="film__sound" data-sound aria-pressed="false"><span class="film__icon" aria-hidden="true"></span><span data-sound-label></span></button>
+          <div class="film__bar" aria-hidden="true"><i data-film-bar></i></div>
         </div>
         <div class="story__copy">
           <p class="eyebrow" data-i18n="story.eyebrow">How it's made</p>
@@ -141,7 +135,9 @@
             <li><span class="steps__n">IV</span><h3 data-i18n="story.s4t">The oven</h3><p data-i18n="story.s4p"></p></li>
             <li><span class="steps__n">V</span><h3 data-i18n="story.s5t">The finish</h3><p data-i18n="story.s5p"></p></li>
           </ol>
-          <div class="dots" aria-hidden="true" data-story-dots><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="dots" data-story-dots>
+            <button aria-label="1"></button><button aria-label="2"></button><button aria-label="3"></button><button aria-label="4"></button><button aria-label="5"></button>
+          </div>
         </div>
       </div>
     </section>

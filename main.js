@@ -375,6 +375,7 @@
     renderPhotos();
     renderHours();
     renderContact();
+    updateSoundLabel();
   }
 
   /* =========================================================
@@ -463,66 +464,64 @@
   }
 
   /* =========================================================
-     STORY — the pizza builds itself
+     STORY — the real video, the steps follow along
      ========================================================= */
-  const story = {};
-  function setupStory() {
-    story.el = $("[data-story]");
-    story.L = makePizza({ seed: 5, sauce: "red", cheese: true, toppings: ["basil"] });
-    story.pizza = $("[data-story-pizza]");
-    story.pizza.appendChild(story.L.svg);
-    story.steps = $$("[data-steps] li");
-    story.dots = $$("[data-story-dots] i");
-    story.oven = $(".oven");
-    story.peel = $(".story__peel");
-    story.temp = $("[data-temp]");
-    story.time = $("[data-time]");
-    const cp = S("clipPath", { id: "clip-sauce" }, S("defs", {}, story.L.svg));
-    story.clip = S("circle", { r: 0 }, cp);
-    story.L.sauce.setAttribute("clip-path", "url(#clip-sauce)");
-    const flames = $("[data-flames]");
-    for (let i = 0; i < 12; i++) { const fl = document.createElement("i"); fl.style.animationDelay = `${(i % 5) * -0.11}s`; flames.appendChild(fl); }
-    story.active = -1;
-  }
-  function renderStory(p) {
-    const s = p * 5;
-    const L = story.L;
-    const dough = easeOut(seg(s, 0, 0.9));
-    const wob = sin(s * 9) * 0.02 * (1 - dough);
-    L.base.setAttribute("transform", `scale(${(0.42 + dough * 0.58 + wob).toFixed(3)} ${(0.42 + dough * 0.58 - wob).toFixed(3)})`);
-    const sauce = easeOut(seg(s, 1, 1.85));
-    story.clip.setAttribute("r", f(sauce * 175));
-    L.sauce.setAttribute("transform", `rotate(${f((1 - sauce) * -120)})`);
-    const ck = seg(s, 2, 2.9);
-    L.cheese.forEach((c, i) => {
-      const k = easeBack(seg(ck, (i / L.cheese.length) * 0.7, (i / L.cheese.length) * 0.7 + 0.3));
-      c.outer.setAttribute("transform", `translate(${f(c.x)} ${f(c.y - (1 - k) * 70)}) scale(${(0.4 + 0.6 * clamp(k, 0, 1.2)).toFixed(3)})`);
-      c.outer.setAttribute("opacity", clamp(k * 2).toFixed(2));
+  const film = {};
+  function setupFilm() {
+    const cfg = SITE.storyVideo || {};
+    const v = (film.v = $("[data-film]"));
+    film.steps = $$("[data-steps] li");
+    film.dots = $$("[data-story-dots] button");
+    film.bar = $("[data-film-bar]");
+    film.sound = $("[data-sound]");
+    film.times = cfg.steps || [0];
+    film.active = -1;
+    if (cfg.poster) v.poster = cfg.poster;
+    if (cfg.src) v.src = cfg.src;
+    if (reduced) v.controls = true;
+
+    film.sound.addEventListener("click", () => {
+      v.muted = !v.muted;
+      if (!v.muted && v.paused) v.play().catch(() => {});
+      updateSoundLabel();
     });
-    const bake = seg(s, 3.1, 3.9);
-    L.crust.setAttribute("opacity", bake.toFixed(3));
-    L.char.setAttribute("opacity", bake.toFixed(3));
-    L.brown.setAttribute("opacity", (bake * 0.9).toFixed(3));
-    const ovenIn = seg(s, 2.75, 3.1) * (1 - seg(s, 3.95, 4.25));
-    story.oven.style.opacity = ovenIn.toFixed(3);
-    story.peel.style.opacity = (1 - ovenIn * 0.85).toFixed(3);
-    const puff = 1 + sin(bake * Math.PI) * 0.03;
-    story.pizza.style.transform = `scale(${((1 - ovenIn * 0.1) * puff).toFixed(3)}) rotate(${f(p * 140)}deg)`;
-    story.temp.textContent = Math.round(20 + 430 * easeOut(seg(s, 2.6, 3.15)));
-    const secs = Math.round(90 * seg(s, 3.1, 3.9));
-    story.time.textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
-    const fin = seg(s, 4.05, 4.8);
-    (L.tops.basil || []).forEach((b, i, arr) => {
-      const k = easeBack(seg(fin, (i / arr.length) * 0.6, (i / arr.length) * 0.6 + 0.4));
-      b.outer.setAttribute("transform", `translate(${f(b.x)} ${f(b.y)}) scale(${clamp(k, 0, 1.3).toFixed(3)})`);
-    });
-    L.oil.setAttribute("opacity", fin.toFixed(3));
-    const idx = min(4, Math.floor(s));
-    if (idx !== story.active) {
-      story.active = idx;
-      story.steps.forEach((li, i) => li.classList.toggle("is-active", i === idx));
+    film.dots.forEach((d, i) => d.addEventListener("click", () => {
+      v.currentTime = (film.times[i] || 0) + 0.05;
+      if (v.paused) v.play().catch(() => {});
+    }));
+    // play only while on screen
+    if ("IntersectionObserver" in window && !reduced) {
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      }, { threshold: 0.35 }).observe(v);
     }
-    story.dots.forEach((d, i) => d.style.setProperty("--fill", clamp(s - i).toFixed(3)));
+    const loop = () => { syncFilm(); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  }
+  function updateSoundLabel() {
+    if (!film.sound) return;
+    const on = !film.v.muted;
+    film.sound.setAttribute("aria-pressed", String(on));
+    $("[data-sound-label]").textContent = on ? t("story.soundOff") : t("story.soundOn");
+  }
+  function syncFilm() {
+    const v = film.v;
+    const dur = v.duration || 0;
+    if (!dur) return;
+    const now = v.currentTime;
+    const T = film.times;
+    let idx = 0;
+    for (let i = 0; i < T.length; i++) if (now >= T[i]) idx = i;
+    if (idx !== film.active) {
+      film.active = idx;
+      film.steps.forEach((li, i) => li.classList.toggle("is-active", i === idx));
+    }
+    film.dots.forEach((d, i) => {
+      const end = i + 1 < T.length ? T[i + 1] : dur;
+      d.style.setProperty("--fill", clamp((now - T[i]) / (end - T[i])).toFixed(3));
+    });
+    film.bar.style.transform = `scaleX(${(now / dur).toFixed(4)})`;
   }
 
   /* =========================================================
@@ -740,8 +739,6 @@
   let ticking = false;
   function frame() {
     ticking = false;
-    const a = progress(story.el);
-    if (a.visible) renderStory(a.p);
     const b = progress(pasta.el);
     if (b.visible) renderPasta(b.p);
   }
@@ -751,7 +748,7 @@
      BOOT
      ========================================================= */
   hero();
-  setupStory();
+  setupFilm();
   setupPasta();
   setupLightbox();
   $$("[data-lang]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
@@ -760,7 +757,6 @@
   const nav = (navigator.language || "en").slice(0, 2);
   setLang(store.get("tavola-lang") || (TEXT[nav] ? nav : "en"));
 
-  renderStory(0);
   renderPasta(0);
   frame();
   addEventListener("scroll", onScroll, { passive: true });
