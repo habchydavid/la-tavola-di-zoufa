@@ -525,29 +525,6 @@
   }
 
   /* =========================================================
-     PASTA — twirl as you scroll
-     ========================================================= */
-  const pasta = {};
-  function setupPasta() {
-    pasta.el = $("[data-pasta]");
-    pasta.L = makePasta({ seed: 21, sauce: "red", extras: ["basil", "parm"], story: true });
-    $("[data-pasta-plate]").appendChild(pasta.L.svg);
-    pasta.hint = $(".pasta__hint");
-  }
-  function renderPasta(p) {
-    const L = pasta.L;
-    const tw = easeOut(seg(p, 0.05, 0.85));
-    L.food.setAttribute("transform", `rotate(${f(tw * 300)}) scale(${(1 - tw * 0.62).toFixed(3)})`);
-    L.food.setAttribute("opacity", (1 - seg(p, 0.6, 0.85)).toFixed(3));
-    L.nestPaths.forEach((n) => n.setAttribute("stroke-dashoffset", (1 - tw).toFixed(4)));
-    L.fork.setAttribute("transform", `rotate(${f(tw * 900)})`);
-    L.nestTop.setAttribute("opacity", seg(p, 0.72, 0.88).toFixed(3));
-    const lift = easeOut(seg(p, 0.82, 1));
-    L.lift.setAttribute("transform", `translate(0 ${f(-lift * 30)}) scale(${(1 + lift * 0.25).toFixed(3)})`);
-    pasta.hint.style.opacity = (1 - seg(p, 0.1, 0.4)).toFixed(2);
-  }
-
-  /* =========================================================
      MENU BOARD
      ========================================================= */
   let menuObserver;
@@ -739,8 +716,6 @@
   let ticking = false;
   function frame() {
     ticking = false;
-    const b = progress(pasta.el);
-    if (b.visible) renderPasta(b.p);
   }
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
 
@@ -749,7 +724,6 @@
      ========================================================= */
   hero();
   setupFilm();
-  setupPasta();
   setupLightbox();
   $$("[data-lang]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
   $("[data-year]").textContent = new Date().getFullYear();
@@ -757,7 +731,6 @@
   const nav = (navigator.language || "en").slice(0, 2);
   setLang(store.get("tavola-lang") || (TEXT[nav] ? nav : "en"));
 
-  renderPasta(0);
   frame();
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll);

@@ -4,15 +4,15 @@
    • Contact details, hours, menu, photos and all the text (EN / FR / AR).
    • You never need to touch index.html, styles.css or main.js to update
      the content.
-   • Contact details and hours are still PLACEHOLDERS. Replace them.
+   • Opening hours are still PLACEHOLDERS. Replace them.
    ===================================================================== */
 
 window.SITE = {
   name: "La Tavola di Zoufa",
 
-  // Contact (placeholders, so replace these)
-  phone: "+961 70 000 000",          // shown on the site
-  whatsapp: "96170000000",           // digits only, with country code, no + or spaces
+  // Contact (from the shop sign)
+  phone: "+961 71 450 843",          // shown on the site
+  whatsapp: "96171450843",           // digits only, with country code, no + or spaces
   instagram: "latavoladizoufa",      // handle without @ (leave "" to hide)
   mapsQuery: "Deir al Ahmar Main Road, Lebanon",
 
@@ -133,12 +133,12 @@ window.SITE = {
      and src: "images/kitchen.mp4". While src is empty a placeholder shows.
   */
   photos: [
-    { src: "", type: "image", caption: { en: "The oven", fr: "Le four", ar: "الفرن" } },
-    { src: "", type: "image", caption: { en: "Fresh out of the oven", fr: "Tout juste sortie du four", ar: "طالعة من الفرن" } },
-    { src: "", type: "image", caption: { en: "Our dining room", fr: "Notre salle", ar: "صالتنا" } },
-    { src: "", type: "video", caption: { en: "Stretching the dough", fr: "On étire la pâte", ar: "فرد العجينة" } },
-    { src: "", type: "image", caption: { en: "Pasta night", fr: "Soirée pâtes", ar: "سهرة باستا" } },
-    { src: "", type: "image", caption: { en: "Main road at sunset", fr: "La route principale au coucher du soleil", ar: "الطريق العام وقت الغروب" } },
+    { src: "images/pasta-steam.jpg", type: "image", caption: { en: "Hot from the pan", fr: "Toutes chaudes de la poêle", ar: "سخنة من المقلاة" } },
+    { src: "images/pizza-bianca.jpg", type: "image", caption: { en: "Fresh out of the oven", fr: "Tout juste sortie du four", ar: "طالعة من الفرن" } },
+    { src: "images/dinner-table.jpg", type: "image", caption: { en: "Dinner at La Tavola", fr: "Dîner à La Tavola", ar: "عشاء في لا تافولا" } },
+    { src: "images/how-its-made.mp4", type: "video", caption: { en: "Making a pizza", fr: "La préparation d'une pizza", ar: "تحضير البيتزا" } },
+    { src: "images/pasta-pizza-bowl.jpg", type: "image", caption: { en: "Pasta in a pizza bowl", fr: "Des pâtes dans un bol de pizza", ar: "باستا داخل وعاء من عجينة البيتزا" } },
+    { src: "images/pasta-wine.jpg", type: "image", caption: { en: "Pink sauce pasta, by lamplight", fr: "Pâtes sauce rosée, à la lueur de la lampe", ar: "باستا بالصلصة الوردية على ضوء القنديل" } },
   ],
 };
 
@@ -166,9 +166,9 @@ window.TEXT = {
     "story.soundOn": "Sound on", "story.soundOff": "Sound off",
 
     "pasta.eyebrow": "And the pasta",
-    "pasta.title": "Twirl it like Nonna.",
-    "pasta.text": "Pasta cooked al dente, then tossed in the pan with the sauce so every strand is coated.",
-    "pasta.hint": "Keep scrolling to twirl ↓",
+    "pasta.title": "Straight from the pan.",
+    "pasta.text": "Cooked al dente, finished in the pan with its sauce, and brought to your table still steaming.",
+    "pasta.cta": "See the pasta",
 
     "menu.eyebrow": "The menu",
     "menu.hint": "Tap a pizza or pasta to see it",
@@ -220,9 +220,9 @@ window.TEXT = {
     "story.soundOn": "Activer le son", "story.soundOff": "Couper le son",
 
     "pasta.eyebrow": "Et les pâtes",
-    "pasta.title": "Enroulez-les comme Nonna.",
-    "pasta.text": "Des pâtes al dente, sautées à la poêle avec la sauce pour bien enrober chaque brin.",
-    "pasta.hint": "Continuez à défiler ↓",
+    "pasta.title": "Tout droit de la poêle.",
+    "pasta.text": "Cuites al dente, terminées à la poêle avec leur sauce, et servies encore fumantes.",
+    "pasta.cta": "Voir les pâtes",
 
     "menu.eyebrow": "La carte",
     "menu.hint": "Touchez une pizza ou des pâtes pour les voir",
@@ -274,9 +274,9 @@ window.TEXT = {
     "story.soundOn": "شغّل الصوت", "story.soundOff": "اكتم الصوت",
 
     "pasta.eyebrow": "والباستا",
-    "pasta.title": "لفّها على الشوكة مثل تيتا.",
-    "pasta.text": "باستا مطبوخة al dente، ثم تُقلَّب في المقلاة مع الصلصة حتى يتغطّى كل خيط منها.",
-    "pasta.hint": "تابع النزول لتلفّها ↓",
+    "pasta.title": "مباشرة من المقلاة.",
+    "pasta.text": "مطبوخة al dente، تُنهى في المقلاة مع صلصتها، وتصل إلى طاولتك والبخار يتصاعد منها.",
+    "pasta.cta": "شوف الباستا",
 
     "menu.eyebrow": "القائمة",
     "menu.hint": "اضغط على أي بيتزا أو باستا لتراها",
