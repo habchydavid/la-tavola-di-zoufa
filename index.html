@@ -118,27 +118,25 @@
       </div>
     </div>
 
-    <!-- STORY: the real video, with the steps following along -->
+    <!-- STORY: the real video, blending into black, steps follow along -->
     <section class="story" id="story" data-story>
-      <div class="story__inner">
-        <div class="film">
-          <video class="film__video" data-film muted loop playsinline preload="metadata" aria-label="How we make our pizza"></video>
-          <button class="film__sound" data-sound aria-pressed="false"><span class="film__icon" aria-hidden="true"></span><span data-sound-label></span></button>
-          <div class="film__bar" aria-hidden="true"><i data-film-bar></i></div>
+      <div class="film">
+        <video class="film__video" data-film muted loop playsinline preload="metadata" aria-label="How we make our pizza"></video>
+        <div class="film__bar" aria-hidden="true"><i data-film-bar></i></div>
+      </div>
+      <div class="story__copy">
+        <p class="eyebrow" data-i18n="story.eyebrow">How it's made</p>
+        <ol class="steps" data-steps>
+          <li class="is-active"><span class="steps__n">I</span><h3 data-i18n="story.s1t">The dough</h3><p data-i18n="story.s1p"></p></li>
+          <li><span class="steps__n">II</span><h3 data-i18n="story.s2t">The tomato</h3><p data-i18n="story.s2p"></p></li>
+          <li><span class="steps__n">III</span><h3 data-i18n="story.s3t">The mozzarella</h3><p data-i18n="story.s3p"></p></li>
+          <li><span class="steps__n">IV</span><h3 data-i18n="story.s4t">The oven</h3><p data-i18n="story.s4p"></p></li>
+          <li><span class="steps__n">V</span><h3 data-i18n="story.s5t">The finish</h3><p data-i18n="story.s5p"></p></li>
+        </ol>
+        <div class="dots" data-story-dots>
+          <button aria-label="1"></button><button aria-label="2"></button><button aria-label="3"></button><button aria-label="4"></button><button aria-label="5"></button>
         </div>
-        <div class="story__copy">
-          <p class="eyebrow" data-i18n="story.eyebrow">How it's made</p>
-          <ol class="steps" data-steps>
-            <li class="is-active"><span class="steps__n">I</span><h3 data-i18n="story.s1t">The dough</h3><p data-i18n="story.s1p"></p></li>
-            <li><span class="steps__n">II</span><h3 data-i18n="story.s2t">The tomato</h3><p data-i18n="story.s2p"></p></li>
-            <li><span class="steps__n">III</span><h3 data-i18n="story.s3t">The mozzarella</h3><p data-i18n="story.s3p"></p></li>
-            <li><span class="steps__n">IV</span><h3 data-i18n="story.s4t">The oven</h3><p data-i18n="story.s4p"></p></li>
-            <li><span class="steps__n">V</span><h3 data-i18n="story.s5t">The finish</h3><p data-i18n="story.s5p"></p></li>
-          </ol>
-          <div class="dots" data-story-dots>
-            <button aria-label="1"></button><button aria-label="2"></button><button aria-label="3"></button><button aria-label="4"></button><button aria-label="5"></button>
-          </div>
-        </div>
+        <button class="film__sound" data-sound aria-pressed="false"><span class="film__icon" aria-hidden="true"></span><span data-sound-label></span></button>
       </div>
     </section>
 
