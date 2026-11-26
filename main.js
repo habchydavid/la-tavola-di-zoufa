@@ -1159,10 +1159,10 @@
       disc.style.left = left.toFixed(1) + "px";
       disc.style.top = top.toFixed(1) + "px";
       disc.style.transform = `translate3d(0, ${(moveK * (endTop - top)).toFixed(1)}px, 0) scale(${(1 + moveK * (endScale - 1)).toFixed(3)})`;
-      const fade = clamp(moveK * 3.5); // the frame behind fades out quickly so there is only one pizza
-      shade.style.opacity = (fade * 0.85).toFixed(3);
-      v.style.opacity = (1 - fade * 0.95).toFixed(3);
-      bg.style.opacity = (1 - fade * 0.5).toFixed(3);
+      // the last frame stays in the background, just dimmed, so the name lands over the chef's pizza
+      shade.style.opacity = (moveK * 0.55).toFixed(3);
+      v.style.opacity = "1";
+      bg.style.opacity = "1";
     };
     const finish = () => {
       if (phase !== "video") return;

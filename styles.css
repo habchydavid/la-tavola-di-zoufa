@@ -775,3 +775,9 @@ body .opening .flourish--draw use { stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: reduce) { .loader__chef, .loader__fill, .loader__track, .loader__tip { animation: none !important; } }
 @keyframes loaderRise { from { opacity: 0; transform: translateY(10px); } }
 @keyframes tipRise { from { opacity: 0; translate: 0 8px; } }
+
+/* the name sits over the dimmed last frame: soft shadows keep it readable */
+.opening .hero__content .brand, .opening .hero__content .brand-sub, .opening .hero__tagline { text-shadow: 0 2px 6px rgba(0, 0, 0, .75), 0 6px 28px rgba(0, 0, 0, .7); }
+.opening .hero__tagline { color: #e6dccb; }
+.opening .hero__content .flourish, .opening .hero__content .tricolor { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .8)); }
+.opening .btn--ghost { background: rgba(11, 10, 9, .65); }
