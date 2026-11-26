@@ -465,78 +465,74 @@
   }
 
   /* =========================================================
-     STORY — the pizza video plays as you scroll
+     SCROLL VIDEOS — pizza, pasta, baguette play as you scroll
      ========================================================= */
-  const film = {};
-  function setupFilm() {
-    const cfg = SITE.storyVideo || {};
-    const v = (film.v = $("[data-film]"));
-    film.el = $("[data-story]");
-    film.steps = $$("[data-steps] li");
-    film.dots = $$("[data-story-dots] button");
-    film.hint = $("[data-story-hint]");
-    film.times = cfg.steps || [0];
-    film.active = -1;
-    film.cur = 0;
-    v.muted = true;
-    v.preload = "auto";
-    if (cfg.poster) v.poster = cfg.poster;
-    const big = cfg.srcHD && matchMedia("(min-width: 861px)").matches;
-    if (cfg.src) v.src = big ? cfg.srcHD : cfg.src;
-    // some phones only allow seeking after the video has "played" once
-    v.addEventListener("loadeddata", () => { v.play().then(() => v.pause()).catch(() => {}); }, { once: true });
-
-    // tapping a step bar scrolls to that moment
-    film.dots.forEach((d, i) => d.addEventListener("click", () => {
-      const dur = v.duration || 13.4;
-      const range = film.el.offsetHeight - innerHeight;
-      const y = film.el.offsetTop + range * clamp((film.times[i] || 0) / dur + 0.005);
-      scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
-    }));
-
-    const loop = () => { scrubFilm(); requestAnimationFrame(loop); };
+  const ROMAN = ["I", "II", "III", "IV", "V", "VI"];
+  const reels = [];
+  function setupReels() {
+    const cfgs = { story: SITE.storyVideo, pv: SITE.pastaVideo, bv: SITE.baguetteVideo };
+    const big = matchMedia("(min-width: 861px)").matches;
+    $$("[data-reel]").forEach((el) => {
+      const cfg = cfgs[el.dataset.reel] || {};
+      const v = $("video", el);
+      const R = { el, v, pin: $(".story__pin", el), steps: $$("[data-steps] li", el), dots: $$("[data-story-dots] button", el), hint: $("[data-story-hint]", el), times: cfg.steps || [0], active: -1, cur: 0, ghost: null };
+      v.muted = true; v.preload = "auto"; v.playsInline = true;
+      if (cfg.poster) v.poster = cfg.poster;
+      const src = big && cfg.srcHD ? cfg.srcHD : cfg.src;
+      if (src) v.src = src;
+      // some phones only allow seeking after the video has "played" once
+      v.addEventListener("loadeddata", () => { v.play().then(() => v.pause()).catch(() => {}); }, { once: true });
+      // tapping a step bar scrolls to that moment
+      R.dots.forEach((d, i) => d.addEventListener("click", () => {
+        const dur = v.duration || 10;
+        const range = el.offsetHeight - innerHeight;
+        const y = el.offsetTop + range * clamp(((R.times[i] || 0) / dur) * 0.86 + 0.005);
+        scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+      }));
+      reels.push(R);
+    });
+    const loop = () => { reels.forEach(scrubReel); requestAnimationFrame(loop); };
     requestAnimationFrame(loop);
   }
   function updateSoundLabel() {}
-  function scrubFilm() {
-    const v = film.v;
-    const r = film.el.getBoundingClientRect();
-    if (r.bottom < -50 || r.top > innerHeight + 50) return; // off screen
-    const range = film.el.offsetHeight - innerHeight;
+  function scrubReel(R) {
+    const { v, el } = R;
+    const r = el.getBoundingClientRect();
+    if (r.bottom < -50 || r.top > innerHeight + 50) return;
+    const range = el.offsetHeight - innerHeight;
     const p = clamp(-r.top / range);
     const dur = v.duration || 0;
-    // last stretch of the scroll: the whole pinned frame fades to black so it hands over cleanly to the pasta
-    film.pin = film.pin || $(".story__pin");
+    // last stretch: the frame softens and darkens, then the steam takes over
     const exit = seg(p, 0.84, 1);
-    if (film.pin) film.pin.style.setProperty("--exit", (exit * 0.7).toFixed(3));
-    if (!reduced) v.style.filter = exit > 0.001 ? `blur(${(exit * 9).toFixed(1)}px) brightness(${(1 - exit * 0.35).toFixed(2)})` : "";
-    if (film.hint) film.hint.style.opacity = (1 - seg(p, 0.02, 0.12)).toFixed(2);
-    if (!dur) { syncSteps(0, 13.4); return; }
+    if (R.pin) R.pin.style.setProperty("--exit", (exit * 0.6).toFixed(3));
+    if (!reduced) v.style.setProperty("--vexit", exit.toFixed(3));
+    if (R.hint) R.hint.style.opacity = (1 - seg(p, 0.02, 0.12)).toFixed(2);
+    if (!dur) { syncSteps(R, 0, 10); return; }
     const target = clamp(p / 0.86) * (dur - 0.05);
     // ease towards the target so the video glides instead of jumping
-    film.cur += (target - film.cur) * 0.22;
-    if (Math.abs(target - film.cur) < 0.005) film.cur = target;
-    if (!v.seeking && Math.abs(v.currentTime - film.cur) > 0.015) {
-      if (typeof v.fastSeek === "function" && Math.abs(v.currentTime - film.cur) > 1) v.fastSeek(film.cur);
-      else v.currentTime = film.cur;
+    R.cur += (target - R.cur) * 0.22;
+    if (Math.abs(target - R.cur) < 0.005) R.cur = target;
+    if (!v.seeking && Math.abs(v.currentTime - R.cur) > 0.015) {
+      if (typeof v.fastSeek === "function" && Math.abs(v.currentTime - R.cur) > 1) v.fastSeek(R.cur);
+      else v.currentTime = R.cur;
     }
-    syncSteps(film.cur, dur);
+    syncSteps(R, R.cur, dur);
   }
-  function syncSteps(now, dur) {
-    const T = film.times;
+  function syncSteps(R, now, dur) {
+    const T = R.times;
     let idx = 0;
     for (let i = 0; i < T.length; i++) if (now >= T[i] - 0.001) idx = i;
-    if (idx !== film.active) {
-      film.active = idx;
-      film.steps.forEach((li, i) => li.classList.toggle("is-active", i === idx));
-      if (film.ghost) {
-        film.ghost.textContent = ["I", "II", "III", "IV", "V"][idx] || "";
-        if (!reduced) film.ghost.animate(
+    if (idx !== R.active) {
+      R.active = idx;
+      R.steps.forEach((li, i) => li.classList.toggle("is-active", i === idx));
+      if (R.ghost) {
+        R.ghost.textContent = ROMAN[idx] || "";
+        if (!reduced) R.ghost.animate(
           [{ opacity: 0, transform: "translateY(-50%) scale(1.25) rotate(-4deg)" }, { opacity: 1, transform: "translateY(-50%) scale(1) rotate(0deg)" }],
           { duration: 900, easing: "cubic-bezier(.23, 1, .32, 1)" });
       }
     }
-    film.dots.forEach((d, i) => {
+    R.dots.forEach((d, i) => {
       const end = i + 1 < T.length ? T[i + 1] : dur;
       d.style.setProperty("--fill", clamp((now - T[i]) / (end - T[i])).toFixed(3));
     });
@@ -774,8 +770,12 @@
       w.innerHTML = [...w.textContent].map((c, i) => `<span class="c" style="--i:${i}">${esc(c)}</span>`).join("");
     });
     // giant numeral behind the video steps
-    const pin = $(".story__pin");
-    if (pin) { film.ghost = document.createElement("span"); film.ghost.className = "story__ghost"; film.ghost.setAttribute("aria-hidden", "true"); film.ghost.textContent = "I"; pin.prepend(film.ghost); }
+    reels.forEach((R) => {
+      if (!R.pin) return;
+      R.ghost = document.createElement("span"); R.ghost.className = "story__ghost"; R.ghost.setAttribute("aria-hidden", "true");
+      R.ghost.textContent = ROMAN[Math.max(0, R.active)] || "I";
+      R.pin.prepend(R.ghost);
+    });
 
     const targets = [...$$("[data-reveal]"), ...$$(".title"), $("[data-wall]"), $(".pasta"), $("[data-opensign]")].filter(Boolean);
     if (reduced || !("IntersectionObserver" in window)) {
@@ -868,7 +868,7 @@
     let off = 0;
 
     const wall = $("[data-wall]");
-    const pinned = [$("[data-story]"), $("[data-pasta]")].filter(Boolean);
+    const pinned = $$("[data-reel]");
     let lastY = scrollY, vel = 0, skew = 0;
     const tick = () => {
       requestAnimationFrame(tick);
@@ -995,26 +995,13 @@
 
 
   /* =========================================================
-     STEAM — warm steam rising from the pasta over the join
+     STEAM — warm steam rising over each join between the videos
      ========================================================= */
   function steamBridge() {
-    const cv = $("[data-steam]");
-    const pastaImg = $(".pasta__media img");
-    if (!cv || reduced) return;
-    const ctx = cv.getContext("2d");
+    if (reduced) return;
     const phone = innerWidth < 860;
-    let W = 0, H = 0, dpr = 1;
-    const resize = () => {
-      dpr = Math.min(1.5, devicePixelRatio || 1);
-      W = cv.clientWidth; H = cv.clientHeight;
-      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    addEventListener("resize", resize);
-
-    // soft, irregular puff sprites (several overlapping blobs, blurred)
     const tints = ["255,226,186", "255,210,160", "255,240,220", "255,196,140"];
+    // soft, irregular puff sprites (several overlapping blobs, blurred), pre-tinted
     const sprites = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
       const tint = tints[k % tints.length];
       const c = document.createElement("canvas"); c.width = c.height = 128;
@@ -1030,55 +1017,65 @@
       return c;
     });
 
-    const N = phone ? 38 : 70;
-    const spawn = (fresh) => ({
-      x: Math.random() * W,
-      y: fresh ? H * (0.45 + Math.random() * 0.55) : H * (0.85 + Math.random() * 0.2),
-      vy: 0.35 + Math.random() * 0.75,
-      ph: Math.random() * TAU,
-      amp: 0.3 + Math.random() * 0.8,
-      s0: 60 + Math.random() * 90,
-      grow: 0.6 + Math.random() * 1.2,
-      life: fresh ? Math.random() : 0,
-      speed: 0.0022 + Math.random() * 0.003,
-      spr: (Math.random() * sprites.length) | 0,
-      rot: Math.random() * TAU,
+    const bridges = $$("[data-steam]").map((cv) => {
+      // the video right after this join comes into focus through the steam
+      let next = cv.parentElement.nextElementSibling;
+      while (next && !next.matches("[data-reel]")) next = next.nextElementSibling;
+      const B = { cv, ctx: cv.getContext("2d"), next: next ? $("video", next) : null, W: 0, H: 0, parts: [] };
+      const resize = () => {
+        const dpr = Math.min(1.5, devicePixelRatio || 1);
+        B.W = cv.clientWidth; B.H = cv.clientHeight;
+        cv.width = Math.round(B.W * dpr); cv.height = Math.round(B.H * dpr);
+        B.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+      resize(); addEventListener("resize", resize);
+      const N = phone ? 38 : 70;
+      B.spawn = (fresh) => ({
+        x: Math.random() * B.W,
+        y: fresh ? B.H * (0.45 + Math.random() * 0.55) : B.H * (0.85 + Math.random() * 0.2),
+        vy: 0.35 + Math.random() * 0.75, ph: Math.random() * TAU, amp: 0.3 + Math.random() * 0.8,
+        s0: 60 + Math.random() * 90, grow: 0.6 + Math.random() * 1.2,
+        life: fresh ? Math.random() : 0, speed: 0.0022 + Math.random() * 0.003,
+        spr: (Math.random() * sprites.length) | 0, rot: Math.random() * TAU,
+      });
+      B.parts = Array.from({ length: N }, () => B.spawn(true));
+      return B;
     });
-    const parts = Array.from({ length: N }, () => spawn(true));
 
     let lastY = scrollY;
     const tick = (t) => {
       requestAnimationFrame(tick);
-      const r = cv.getBoundingClientRect();
       const vh = innerHeight;
       const dy = scrollY - lastY; lastY = scrollY;
-      // the pasta photo comes into focus as it rises through the steam
-      if (pastaImg) {
-        const pr = pastaImg.getBoundingClientRect();
-        const k = clamp((pr.top - vh * 0.15) / (vh * 0.7));
-        pastaImg.style.filter = k > 0.01 ? `blur(${(k * 12).toFixed(1)}px) brightness(${(1 - k * 0.3).toFixed(2)})` : "";
-      }
-      if (r.bottom < 0 || r.top > vh) return;
-      // strongest when the join is in the middle of the screen
-      const mid = r.top + r.height / 2;
-      const strength = clamp(1 - Math.abs(mid - vh * 0.55) / (vh * 0.9));
-      ctx.clearRect(0, 0, W, H);
-      if (strength < 0.01) return;
-      ctx.globalCompositeOperation = "screen";
-      for (const q of parts) {
-        q.life += q.speed;
-        q.y -= q.vy + dy * 0.25;
-        q.x += Math.sin(t / 1400 + q.ph) * q.amp;
-        q.rot += 0.002;
-        if (q.life >= 1 || q.y < -200) Object.assign(q, spawn(false));
-        const size = q.s0 * (1 + q.life * q.grow);
-        const a = Math.sin(q.life * Math.PI) * 0.22 * strength;
-        if (a < 0.003) continue;
-        ctx.save();
-        ctx.globalAlpha = a;
-        ctx.translate(q.x, q.y); ctx.rotate(q.rot);
-        ctx.drawImage(sprites[q.spr], -size / 2, -size / 2, size, size);
-        ctx.restore();
+      for (const B of bridges) {
+        if (B.next) {
+          const nr = B.next.parentElement.parentElement.getBoundingClientRect(); // the pinned frame
+          const k = clamp((nr.top - vh * 0.15) / (vh * 0.7));
+          B.next.style.setProperty("--venter", k.toFixed(3));
+        }
+        const r = B.cv.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) continue;
+        const mid = r.top + r.height / 2;
+        const strength = clamp(1 - Math.abs(mid - vh * 0.55) / (vh * 0.9));
+        const ctx = B.ctx;
+        ctx.clearRect(0, 0, B.W, B.H);
+        if (strength < 0.01) continue;
+        ctx.globalCompositeOperation = "screen";
+        for (const q of B.parts) {
+          q.life += q.speed;
+          q.y -= q.vy + dy * 0.25;
+          q.x += Math.sin(t / 1400 + q.ph) * q.amp;
+          q.rot += 0.002;
+          if (q.life >= 1 || q.y < -200) Object.assign(q, B.spawn(false));
+          const size = q.s0 * (1 + q.life * q.grow);
+          const a = Math.sin(q.life * Math.PI) * 0.22 * strength;
+          if (a < 0.003) continue;
+          ctx.save();
+          ctx.globalAlpha = a;
+          ctx.translate(q.x, q.y); ctx.rotate(q.rot);
+          ctx.drawImage(sprites[q.spr], -size / 2, -size / 2, size, size);
+          ctx.restore();
+        }
       }
     };
     requestAnimationFrame(tick);
@@ -1088,7 +1085,7 @@
      BOOT
      ========================================================= */
   hero();
-  setupFilm();
+  setupReels();
   setupLightbox();
   $$("[data-lang]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
   $("[data-year]").textContent = new Date().getFullYear();

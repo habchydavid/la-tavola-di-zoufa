@@ -34,6 +34,14 @@ window.SITE = {
      steps: the second (in the video) where each of the 5 steps starts:
      dough, tomato, mozzarella, oven, finish.
   */
+  pastaVideo: {
+    src: "images/pasta-video.mp4", srcHD: "images/pasta-video-hd.mp4", poster: "images/pasta-video.jpg",
+    steps: [0, 2.0, 4.0, 6.0, 7.2],   // mushrooms, cream, seasoning, pasta, toss
+  },
+  baguetteVideo: {
+    src: "images/baguette-video.mp4", srcHD: "images/baguette-video-hd.mp4", poster: "images/baguette-video.jpg",
+    steps: [0, 1.2, 5.0, 7.0],         // bread, avocado, tomato, ready
+  },
   storyVideo: {
     src: "images/how-its-made.mp4",       // used on phones (lighter)
     srcHD: "images/how-its-made-hd.mp4",  // used on computers (sharper)
@@ -148,6 +156,26 @@ window.SITE = {
 /* ---------------- ALL THE TEXT ON THE SITE ---------------- */
 window.TEXT = {
   en: {
+    "pv.h2": "How we make our pasta",
+    "pv.s1t": "The mushrooms",
+    "pv.s1p": "Sliced mushrooms, sizzling in the pan.",
+    "pv.s2t": "The cream",
+    "pv.s2p": "A generous pour of cream, simmered until silky.",
+    "pv.s3t": "The seasoning",
+    "pv.s3p": "Cracked black pepper, and everything folded together.",
+    "pv.s4t": "The pasta",
+    "pv.s4p": "Fresh ribbons of pasta go straight into the sauce.",
+    "pv.s5t": "The toss",
+    "pv.s5p": "Tossed until every strand is coated, then straight to your table.",
+    "bv.h2": "How we make our baguettes",
+    "bv.s1t": "The bread",
+    "bv.s1p": "Baked in our oven, then opened while it's still warm.",
+    "bv.s2t": "The avocado",
+    "bv.s2p": "Fresh avocado, spread from end to end.",
+    "bv.s3t": "The tomato",
+    "bv.s3p": "Ripe tomato slices over the meat and melted cheese.",
+    "bv.s4t": "Ready",
+    "bv.s4p": "Folded shut, pressed and cut, ready for your table.",
     "brand.sub": "Italian Restaurant",
     "nav.story": "Our pizza", "nav.menu": "Menu", "nav.photos": "Photos", "nav.visit": "Visit",
     "hero.tagline": "Neapolitan pizza & Italian pasta, on the main road of Deir al Ahmar.",
@@ -203,6 +231,26 @@ window.TEXT = {
   },
 
   fr: {
+    "pv.h2": "Comment on prépare nos pâtes",
+    "pv.s1t": "Les champignons",
+    "pv.s1p": "Des champignons émincés qui grésillent dans la poêle.",
+    "pv.s2t": "La crème",
+    "pv.s2p": "Une belle dose de crème, mijotée jusqu'à devenir onctueuse.",
+    "pv.s3t": "L'assaisonnement",
+    "pv.s3p": "Du poivre noir concassé, et on mélange le tout.",
+    "pv.s4t": "Les pâtes",
+    "pv.s4p": "Les pâtes fraîches plongent directement dans la sauce.",
+    "pv.s5t": "Le mélange final",
+    "pv.s5p": "Mélangées jusqu'à ce que chaque brin soit enrobé, puis directement à votre table.",
+    "bv.h2": "Comment on prépare nos baguettes",
+    "bv.s1t": "Le pain",
+    "bv.s1p": "Cuit dans notre four, puis ouvert encore tiède.",
+    "bv.s2t": "L'avocat",
+    "bv.s2p": "De l'avocat frais, étalé d'un bout à l'autre.",
+    "bv.s3t": "La tomate",
+    "bv.s3p": "Des tranches de tomate mûre sur la viande et le fromage fondu.",
+    "bv.s4t": "C'est prêt",
+    "bv.s4p": "Refermée, pressée et coupée, prête pour votre table.",
     "brand.sub": "Restaurant italien",
     "nav.story": "Notre pizza", "nav.menu": "Menu", "nav.photos": "Photos", "nav.visit": "Nous trouver",
     "hero.tagline": "Pizza napolitaine et pâtes italiennes, sur la route principale de Deir el Ahmar.",
@@ -258,6 +306,26 @@ window.TEXT = {
   },
 
   ar: {
+    "pv.h2": "كيف نحضّر الباستا",
+    "pv.s1t": "الفطر",
+    "pv.s1p": "فطر مقطّع شرائح يُقلى في المقلاة.",
+    "pv.s2t": "الكريما",
+    "pv.s2p": "كمية سخية من الكريما تُطهى على نار هادئة حتى تصبح ناعمة.",
+    "pv.s3t": "التتبيلة",
+    "pv.s3p": "فلفل أسود مطحون، ثم نمزج كل شيء معاً.",
+    "pv.s4t": "الباستا",
+    "pv.s4p": "شرائط الباستا تدخل مباشرة إلى الصلصة.",
+    "pv.s5t": "اللمسة الأخيرة",
+    "pv.s5p": "تُقلَّب حتى يتغطّى كل خيط بالصلصة، ثم مباشرة إلى طاولتك.",
+    "bv.h2": "كيف نحضّر الباغيت",
+    "bv.s1t": "الخبز",
+    "bv.s1p": "يُخبز في فرننا، ثم يُفتح وهو لا يزال ساخناً.",
+    "bv.s2t": "الأفوكادو",
+    "bv.s2p": "أفوكادو طازج يُدهن من طرف إلى طرف.",
+    "bv.s3t": "البندورة",
+    "bv.s3p": "شرائح بندورة ناضجة فوق اللحم والجبنة الذائبة.",
+    "bv.s4t": "جاهزة",
+    "bv.s4p": "تُغلق وتُضغط وتُقطَّع، جاهزة لطاولتك.",
     "brand.sub": "مطعم إيطالي",
     "nav.story": "البيتزا", "nav.menu": "القائمة", "nav.photos": "الصور", "nav.visit": "زورونا",
     "hero.tagline": "بيتزا نابوليتانية وباستا إيطالية، على الطريق العام في دير الأحمر.",

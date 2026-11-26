@@ -648,10 +648,29 @@ html[lang="ar"] .visit .card h3 { letter-spacing: 0; font-size: 1.25rem; }
 .steam-bridge canvas { position: absolute; left: 0; width: 100%; top: -70vh; height: 130vh; display: block; pointer-events: none; }
 .steam-bridge__blur {
   position: absolute; left: 0; right: 0; top: -22vh; height: 44vh;
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 35%, #000 65%, transparent);
           mask-image: linear-gradient(180deg, transparent, #000 35%, #000 65%, transparent);
   background: radial-gradient(ellipse 70% 60% at 40% 60%, rgba(255, 170, 90, .10), transparent 70%);
 }
 .film__video { transition: none; }
 @media (prefers-reduced-motion: reduce) { .steam-bridge canvas { display: none; } }
+
+/* video softening is driven by two variables: entering through steam, and leaving */
+.film__video { filter: blur(calc(var(--venter, 0) * 6px + var(--vexit, 0) * 5px)) brightness(calc(1 - var(--venter, 0) * .3 - var(--vexit, 0) * .3)) saturate(1.05) contrast(1.03); }
+
+/* mirrored scroll video: video on the left, steps on the right */
+.story--left .story__pin { justify-content: flex-end; background: linear-gradient(270deg, #000 0%, #050404 30%, #120e0c 52%, #1c1511 68%, #000 100%); }
+.story--left .story__copy { margin-inline-start: 0; margin-inline-end: clamp(0px, 3vw, 4rem); }
+.story--left .film { right: auto; left: 0; transform: scaleX(-1); }
+.story--left .film__video { transform: scaleX(-1); }
+.story--left .story__ghost { left: auto; right: 1vw; }
+[dir="rtl"] .story--left .story__pin { background: linear-gradient(90deg, #000 0%, #050404 30%, #120e0c 52%, #1c1511 68%, #000 100%); }
+[dir="rtl"] .story--left .film { left: auto; right: 0; }
+[dir="rtl"] .story--left .story__ghost { right: auto; left: 1vw; }
+@media (max-width: 860px) {
+  .story--left .film { left: 0; right: 22%; }
+  [dir="rtl"] .story--left .film { left: 22%; right: 0; }
+  .story--left .story__copy { margin: 0; }
+  .story--left .story__ghost { right: -2vw; left: auto; }
+}

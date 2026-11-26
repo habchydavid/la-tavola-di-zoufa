@@ -118,7 +118,7 @@
     </div>
 
     <!-- STORY: the real video, blending into black, steps follow along -->
-    <section class="story" id="story" data-story>
+    <section class="story" id="story" data-story data-reel="story">
       <div class="story__pin">
       <div class="film">
         <video class="film__video" data-film muted loop playsinline preload="metadata" aria-label="How we make our pizza"></video>
@@ -141,16 +141,53 @@
       </div>
     </section>
 
-    <!-- STEAM rising from the pasta, joining the two sections -->
+    <!-- STEAM joins the scroll videos together -->
     <div class="steam-bridge" aria-hidden="true"><div class="steam-bridge__blur"></div><canvas data-steam></canvas></div>
 
-    <!-- PASTA: photo on the left, blending into black, text on the right -->
-    <section class="pasta" data-pasta>
-      <div class="pasta__media" aria-hidden="true"><img src="images/pasta-steam.jpg" alt="" loading="lazy" /></div>
-      <div class="pasta__copy">
-        <h2 class="title" data-i18n="pasta.title">Straight from the pan.</h2>
-        <p class="lede" data-i18n="pasta.text"></p>
-        <a href="#menu" class="btn btn--ghost" data-i18n="pasta.cta">See the pasta</a>
+    <!-- PASTA: scroll video on the left, steps on the right -->
+    <section class="story story--left" id="pv" data-reel="pv">
+      <div class="story__pin">
+      <div class="film">
+        <video class="film__video" muted playsinline preload="metadata" aria-label=""></video>
+      </div>
+      <div class="story__copy">
+        <h2 class="sr-only" data-i18n="pv.h2"></h2>
+        <ol class="steps" data-steps>
+          <li class="is-active"><span class="steps__n">I</span><h3 data-i18n="pv.s1t"></h3><p data-i18n="pv.s1p"></p></li>
+          <li><span class="steps__n">II</span><h3 data-i18n="pv.s2t"></h3><p data-i18n="pv.s2p"></p></li>
+          <li><span class="steps__n">III</span><h3 data-i18n="pv.s3t"></h3><p data-i18n="pv.s3p"></p></li>
+          <li><span class="steps__n">IV</span><h3 data-i18n="pv.s4t"></h3><p data-i18n="pv.s4p"></p></li>
+          <li><span class="steps__n">V</span><h3 data-i18n="pv.s5t"></h3><p data-i18n="pv.s5p"></p></li>
+        </ol>
+        <div class="dots" data-story-dots>
+          <button aria-label="1"></button><button aria-label="2"></button><button aria-label="3"></button><button aria-label="4"></button><button aria-label="5"></button>
+        </div>
+        <p class="story__hint" data-story-hint data-i18n="story.hint">Scroll ↓</p>
+      </div>
+      </div>
+    </section>
+
+    <div class="steam-bridge" aria-hidden="true"><div class="steam-bridge__blur"></div><canvas data-steam></canvas></div>
+
+    <!-- BAGUETTE: scroll video on the right, steps on the left -->
+    <section class="story" id="bv" data-reel="bv">
+      <div class="story__pin">
+      <div class="film">
+        <video class="film__video" muted playsinline preload="metadata" aria-label=""></video>
+      </div>
+      <div class="story__copy">
+        <h2 class="sr-only" data-i18n="bv.h2"></h2>
+        <ol class="steps" data-steps>
+          <li class="is-active"><span class="steps__n">I</span><h3 data-i18n="bv.s1t"></h3><p data-i18n="bv.s1p"></p></li>
+          <li><span class="steps__n">II</span><h3 data-i18n="bv.s2t"></h3><p data-i18n="bv.s2p"></p></li>
+          <li><span class="steps__n">III</span><h3 data-i18n="bv.s3t"></h3><p data-i18n="bv.s3p"></p></li>
+          <li><span class="steps__n">IV</span><h3 data-i18n="bv.s4t"></h3><p data-i18n="bv.s4p"></p></li>
+        </ol>
+        <div class="dots" data-story-dots>
+          <button aria-label="1"></button><button aria-label="2"></button><button aria-label="3"></button><button aria-label="4"></button>
+        </div>
+        <p class="story__hint" data-story-hint data-i18n="story.hint">Scroll ↓</p>
+      </div>
       </div>
     </section>
 
