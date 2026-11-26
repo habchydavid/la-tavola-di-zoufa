@@ -570,6 +570,7 @@
           if (canDraw) {
             li.innerHTML = `<button class="mi__btn" aria-expanded="false">${inner}</button><div class="mi__panel"><div><div class="mi__art"></div></div></div>`;
             const btn = $(".mi__btn", li);
+            btn._draw = () => (sec.art === "pizza" ? makePizza({ seed: s0, ...it.draw }) : makePasta({ seed: s0, ...it.draw })).svg;
             btn.addEventListener("click", () => {
               const art = $(".mi__art", li);
               if (!art.firstChild) art.appendChild(sec.art === "pizza" ? makePizza({ seed: s0, ...it.draw }).svg : makePasta({ seed: s0, ...it.draw }).svg);
@@ -804,6 +805,180 @@
     requestAnimationFrame(tick);
   }
 
+
+  /* =========================================================
+     EXTRA — cursor, magnetic buttons, floating ingredients,
+     menu follower, topping bursts, scroll-driven bits
+     ========================================================= */
+  function miniTopping(name, seed, size) {
+    const svg = S("svg", { viewBox: "-30 -30 60 60", width: size, height: size, "aria-hidden": "true" });
+    TOPPING[name].draw(S("g", {}, svg), rng(seed));
+    return svg;
+  }
+
+  function crazy() {
+    if (reduced) return;
+    const fine = finePointer && matchMedia("(hover: hover)").matches;
+    const phone = innerWidth < 860;
+    const R = rng(77);
+
+    // tricolor scroll progress under the nav
+    const bar = document.createElement("span");
+    bar.className = "progress";
+    $(".nav").appendChild(bar);
+
+    // floating ingredients down the edges of the page
+    const layer = document.createElement("div");
+    layer.className = "floaters";
+    layer.setAttribute("aria-hidden", "true");
+    document.body.appendChild(layer);
+    const kinds = ["basil", "tomato", "olive", "basil", "mushroom", "chili", "salami", "parm", "basil", "tomato", "olive", "basil"];
+    const floaters = kinds.slice(0, phone ? 7 : 12).map((k, i) => {
+      const depth = 0.25 + R() * 1.1;
+      const size = Math.round((22 + depth * 34) * (phone ? 0.75 : 1));
+      const el = document.createElement("div");
+      el.className = "floater";
+      el.appendChild(miniTopping(k, 900 + i, size));
+      if (depth < 0.5) el.style.filter = "blur(1.5px)";
+      el.style.opacity = (0.55 + Math.min(depth, 1) * 0.4).toFixed(2);
+      const left = i % 2 === 0;
+      el.style.left = (left ? (phone ? -3 + R() * 7 : 1 + R() * 7) : (phone ? 89 + R() * 8 : 90 + R() * 7)).toFixed(1) + "vw";
+      layer.appendChild(el);
+      return { el, depth, y0: R(), rot: R() * 360, spin: (R() - 0.5) * 0.7 };
+    });
+
+    // ribbon slides with scroll speed (no autoplay)
+    const track = $(".ribbon__track");
+    [...track.children].forEach((c) => { const k = c.cloneNode(true); k.removeAttribute("data-reveal"); k.classList.remove("is-in"); track.appendChild(k); });
+    track.classList.add("is-live");
+    let off = 0;
+
+    const wall = $("[data-wall]");
+    const pinned = [$("[data-story]"), $("[data-pasta]")].filter(Boolean);
+    let lastY = scrollY, vel = 0, skew = 0;
+    const tick = () => {
+      requestAnimationFrame(tick);
+      const y = scrollY, H = innerHeight;
+      const dy = y - lastY; lastY = y;
+      vel += (dy - vel) * 0.15;
+      const max = document.documentElement.scrollHeight - H;
+      bar.style.transform = `scaleX(${max > 0 ? (y / max).toFixed(4) : 0})`;
+
+      // hide the floaters over the video and pasta sections (text sits at the edges there)
+      const busy = document.body.classList.contains("is-intro") || pinned.some((el) => { const r = el.getBoundingClientRect(); return r.top < H * 0.55 && r.bottom > H * 0.45; });
+      layer.style.opacity = busy ? "0" : "1";
+      const span = H + 200;
+      for (const f of floaters) {
+        let py = (f.y0 * span - y * f.depth * 0.6) % span;
+        if (py < 0) py += span;
+        f.el.style.transform = `translate3d(0, ${(py - 100).toFixed(1)}px, 0) rotate(${(f.rot + y * f.spin * f.depth).toFixed(1)}deg)`;
+      }
+
+      off -= vel * 0.8;
+      const half = track.scrollWidth / 2;
+      if (half > 0) { off %= half; if (off > 0) off -= half; track.style.transform = `translate3d(${off.toFixed(1)}px, 0, 0)`; }
+
+      skew += (clamp(vel * 0.25, -7, 7) - skew) * 0.1;
+      if (wall.classList.contains("is-settled")) wall.style.transform = Math.abs(skew) > 0.02 ? `skewY(${skew.toFixed(2)}deg)` : "";
+    };
+    requestAnimationFrame(tick);
+
+    // toppings burst out of any button you click
+    const burstKinds = ["basil", "tomato", "olive", "chili", "parm", "basil", "salami"];
+    const burst = (x, y) => {
+      const flash = document.createElement("div");
+      flash.className = "burst-ring"; flash.style.left = x + "px"; flash.style.top = y + "px";
+      document.body.appendChild(flash);
+      flash.animate([{ transform: "translate(-50%, -50%) scale(.2)", opacity: 1 }, { transform: "translate(-50%, -50%) scale(2.6)", opacity: 0 }], { duration: 650, easing: "cubic-bezier(.23, 1, .32, 1)" }).onfinish = () => flash.remove();
+      for (let i = 0; i < 22; i++) {
+        const el = document.createElement("div");
+        el.className = "burst";
+        el.appendChild(miniTopping(burstKinds[i % burstKinds.length], (Math.random() * 1e6) | 0, Math.round(34 + Math.random() * 24)));
+        el.style.left = x + "px"; el.style.top = y + "px";
+        document.body.appendChild(el);
+        const a = Math.random() * TAU, sp = 140 + Math.random() * 230;
+        const dx = cos(a) * sp, dy = sin(a) * sp - 70, rot = (Math.random() - 0.5) * 720;
+        el.animate([
+          { transform: "translate(-50%, -50%) scale(.3) rotate(0deg)", opacity: 1 },
+          { transform: `translate(calc(-50% + ${dx.toFixed(0)}px), calc(-50% + ${dy.toFixed(0)}px)) scale(1) rotate(${(rot / 2).toFixed(0)}deg)`, opacity: 1, offset: 0.5 },
+          { transform: `translate(calc(-50% + ${(dx * 1.25).toFixed(0)}px), calc(-50% + ${(dy + 240).toFixed(0)}px)) scale(.8) rotate(${rot.toFixed(0)}deg)`, opacity: 0 },
+        ], { duration: 1100 + Math.random() * 400, easing: "cubic-bezier(.2, .6, .4, 1)" }).onfinish = () => el.remove();
+      }
+    };
+    document.addEventListener("click", (e) => { const b = e.target.closest(".btn, .fab"); if (b) burst(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2); });
+
+    if (!fine) return;
+
+    // gold cursor: dot + trailing ring that swells over clickable things
+    const dot = document.createElement("div"); dot.className = "cursor-dot";
+    const ring = document.createElement("div"); ring.className = "cursor-ring"; ring.innerHTML = "<i></i>";
+    document.body.append(dot, ring);
+    let cx = -100, cy = -100, rx = -100, ry = -100;
+    addEventListener("pointermove", (e) => {
+      cx = e.clientX; cy = e.clientY;
+      const t = e.target.closest && e.target.closest("a, button, .polaroid, .mi__btn");
+      ring.classList.toggle("is-big", !!t);
+      dot.classList.add("is-on"); ring.classList.add("is-on");
+    });
+    document.documentElement.addEventListener("pointerleave", () => { dot.classList.remove("is-on"); ring.classList.remove("is-on"); });
+
+    // magnetic buttons
+    $$(".btn, .fab, .lang").forEach((el) => {
+      el.addEventListener("pointermove", (e) => {
+        const r = el.getBoundingClientRect();
+        el.style.translate = `${((e.clientX - r.left - r.width / 2) * 0.3).toFixed(1)}px ${((e.clientY - r.top - r.height / 2) * 0.4).toFixed(1)}px`;
+      });
+      el.addEventListener("pointerleave", () => { el.style.translate = "0px 0px"; });
+    });
+
+    // hero letters scatter away from the mouse
+    const hero = $(".hero");
+    const chars = $$(".brand--hero .ch");
+    setTimeout(() => chars.forEach((c) => (c.style.transitionDelay = "0ms")), 4600);
+    hero.addEventListener("pointermove", (e) => {
+      if (!document.body.classList.contains("is-ready")) return;
+      chars.forEach((c) => {
+        const r = c.getBoundingClientRect();
+        const dx = r.left + r.width / 2 - e.clientX, dy = r.top + r.height / 2 - e.clientY;
+        const d = hypot(dx, dy) || 1, k = clamp(1 - d / 230);
+        c.style.translate = `${((dx / d) * k * 28).toFixed(1)}px ${((dy / d) * k * 28).toFixed(1)}px`;
+        c.style.rotate = `${((dx / d) * k * 16).toFixed(1)}deg`;
+        c.style.color = k > 0.35 ? "var(--gold)" : "";
+      });
+    });
+    hero.addEventListener("pointerleave", () => chars.forEach((c) => { c.style.translate = ""; c.style.rotate = ""; c.style.color = ""; }));
+
+    // menu: a spinning drawing of the dish follows the cursor
+    const grid = $("[data-menu]");
+    const fl = document.createElement("div"); fl.className = "menu-float"; fl.innerHTML = '<div class="menu-float__in"></div>';
+    document.body.appendChild(fl);
+    const flIn = fl.firstChild;
+    let cur = null, fx = innerWidth / 2, fy = innerHeight / 2;
+    grid.addEventListener("pointerover", (e) => {
+      const b = e.target.closest(".mi__btn");
+      if (!b || b === cur || !b._draw) return;
+      cur = b;
+      b._svg = b._svg || b._draw();
+      flIn.replaceChildren(b._svg);
+      fl.classList.add("is-on");
+    });
+    grid.addEventListener("pointerout", (e) => {
+      const b = e.target.closest(".mi__btn");
+      if (b && !b.contains(e.relatedTarget)) { cur = null; fl.classList.remove("is-on"); }
+    });
+
+    const follow = () => {
+      requestAnimationFrame(follow);
+      rx += (cx - rx) * 0.18; ry += (cy - ry) * 0.18;
+      dot.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      ring.style.transform = `translate3d(${rx.toFixed(1)}px, ${ry.toFixed(1)}px, 0)`;
+      const vx = cx - fx;
+      fx += vx * 0.14; fy += (cy - fy) * 0.14;
+      fl.style.transform = `translate3d(${(fx + 40).toFixed(1)}px, ${(fy - 110).toFixed(1)}px, 0) rotate(${clamp(vx * 0.08, -18, 18).toFixed(1)}deg)`;
+    };
+    requestAnimationFrame(follow);
+  }
+
   /* =========================================================
      BOOT
      ========================================================= */
@@ -824,4 +999,5 @@
   embers();
   setupMotion();
   heroMotion();
+  crazy();
 })();
