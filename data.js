@@ -236,7 +236,7 @@ window.TEXT = {
     "status.today": "today", "status.tomorrow": "tomorrow",
 
     "footer.love": "Made with love, tomatoes and a lot of mozzarella.",
-    "wa.msg": "Hi! I'd like to place an order 🍕",
+    "wa.msg": "Thank you for contacting us. What would you like to order today?",
   },
 
   fr: {
@@ -311,7 +311,7 @@ window.TEXT = {
     "status.today": "aujourd'hui", "status.tomorrow": "demain",
 
     "footer.love": "Fait avec amour, des tomates et beaucoup de mozzarella.",
-    "wa.msg": "Bonjour ! J'aimerais passer une commande 🍕",
+    "wa.msg": "Merci de nous avoir contactés. Que souhaitez-vous commander aujourd'hui ?",
   },
 
   ar: {
@@ -386,6 +386,6 @@ window.TEXT = {
     "status.today": "اليوم", "status.tomorrow": "غداً",
 
     "footer.love": "مصنوع بالحب، والبندورة، والكثير من الموتزاريلا.",
-    "wa.msg": "مرحبا! بدّي أطلب 🍕",
+    "wa.msg": "شكراً لتواصلكم معنا. ماذا تودّون أن تطلبوا اليوم؟",
   },
 };
