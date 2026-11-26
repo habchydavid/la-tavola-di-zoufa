@@ -640,5 +640,18 @@ html[lang="ar"] .visit .card h3 { letter-spacing: 0; font-size: 1.25rem; }
 /* hand-over between the pizza video and the pasta photo: both meet in black */
 .story__pin::after { content: ""; position: absolute; inset: 0; z-index: 6; background: #000; opacity: var(--exit, 0); pointer-events: none; }
 .story__pin::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 1; background: linear-gradient(180deg, transparent, #000); pointer-events: none; }
-.pasta::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 38%; z-index: 1; background: linear-gradient(180deg, #000 0%, rgba(0,0,0,.85) 30%, transparent 100%); pointer-events: none; }
+.pasta::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 30%; z-index: 1; background: linear-gradient(180deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.4) 40%, transparent 100%); pointer-events: none; }
 .pasta { background-color: #000; }
+
+/* steam bridge: sits on the join between the pizza video and the pasta */
+.steam-bridge { position: relative; height: 0; z-index: 8; pointer-events: none; }
+.steam-bridge canvas { position: absolute; left: 0; width: 100%; top: -70vh; height: 130vh; display: block; pointer-events: none; }
+.steam-bridge__blur {
+  position: absolute; left: 0; right: 0; top: -22vh; height: 44vh;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 35%, #000 65%, transparent);
+          mask-image: linear-gradient(180deg, transparent, #000 35%, #000 65%, transparent);
+  background: radial-gradient(ellipse 70% 60% at 40% 60%, rgba(255, 170, 90, .10), transparent 70%);
+}
+.film__video { transition: none; }
+@media (prefers-reduced-motion: reduce) { .steam-bridge canvas { display: none; } }

@@ -507,7 +507,9 @@
     const dur = v.duration || 0;
     // last stretch of the scroll: the whole pinned frame fades to black so it hands over cleanly to the pasta
     film.pin = film.pin || $(".story__pin");
-    if (film.pin) film.pin.style.setProperty("--exit", seg(p, 0.86, 0.98).toFixed(3));
+    const exit = seg(p, 0.84, 1);
+    if (film.pin) film.pin.style.setProperty("--exit", (exit * 0.7).toFixed(3));
+    if (!reduced) v.style.filter = exit > 0.001 ? `blur(${(exit * 9).toFixed(1)}px) brightness(${(1 - exit * 0.35).toFixed(2)})` : "";
     if (film.hint) film.hint.style.opacity = (1 - seg(p, 0.02, 0.12)).toFixed(2);
     if (!dur) { syncSteps(0, 13.4); return; }
     const target = clamp(p / 0.86) * (dur - 0.05);
@@ -991,6 +993,97 @@
     requestAnimationFrame(follow);
   }
 
+
+  /* =========================================================
+     STEAM — warm steam rising from the pasta over the join
+     ========================================================= */
+  function steamBridge() {
+    const cv = $("[data-steam]");
+    const pastaImg = $(".pasta__media img");
+    if (!cv || reduced) return;
+    const ctx = cv.getContext("2d");
+    const phone = innerWidth < 860;
+    let W = 0, H = 0, dpr = 1;
+    const resize = () => {
+      dpr = Math.min(1.5, devicePixelRatio || 1);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    addEventListener("resize", resize);
+
+    // soft, irregular puff sprites (several overlapping blobs, blurred)
+    const tints = ["255,226,186", "255,210,160", "255,240,220", "255,196,140"];
+    const sprites = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => {
+      const tint = tints[k % tints.length];
+      const c = document.createElement("canvas"); c.width = c.height = 128;
+      const g = c.getContext("2d");
+      const r = rng(31 + k * 7);
+      try { g.filter = "blur(6px)"; } catch {}
+      for (let i = 0; i < 7; i++) {
+        const x = 64 + (r() - 0.5) * 50, y = 64 + (r() - 0.5) * 40, rad = 14 + r() * 22;
+        const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+        gr.addColorStop(0, `rgba(${tint},.6)`); gr.addColorStop(1, `rgba(${tint},0)`);
+        g.fillStyle = gr; g.beginPath(); g.arc(x, y, rad, 0, TAU); g.fill();
+      }
+      return c;
+    });
+
+    const N = phone ? 38 : 70;
+    const spawn = (fresh) => ({
+      x: Math.random() * W,
+      y: fresh ? H * (0.45 + Math.random() * 0.55) : H * (0.85 + Math.random() * 0.2),
+      vy: 0.35 + Math.random() * 0.75,
+      ph: Math.random() * TAU,
+      amp: 0.3 + Math.random() * 0.8,
+      s0: 60 + Math.random() * 90,
+      grow: 0.6 + Math.random() * 1.2,
+      life: fresh ? Math.random() : 0,
+      speed: 0.0022 + Math.random() * 0.003,
+      spr: (Math.random() * sprites.length) | 0,
+      rot: Math.random() * TAU,
+    });
+    const parts = Array.from({ length: N }, () => spawn(true));
+
+    let lastY = scrollY;
+    const tick = (t) => {
+      requestAnimationFrame(tick);
+      const r = cv.getBoundingClientRect();
+      const vh = innerHeight;
+      const dy = scrollY - lastY; lastY = scrollY;
+      // the pasta photo comes into focus as it rises through the steam
+      if (pastaImg) {
+        const pr = pastaImg.getBoundingClientRect();
+        const k = clamp((pr.top - vh * 0.15) / (vh * 0.7));
+        pastaImg.style.filter = k > 0.01 ? `blur(${(k * 12).toFixed(1)}px) brightness(${(1 - k * 0.3).toFixed(2)})` : "";
+      }
+      if (r.bottom < 0 || r.top > vh) return;
+      // strongest when the join is in the middle of the screen
+      const mid = r.top + r.height / 2;
+      const strength = clamp(1 - Math.abs(mid - vh * 0.55) / (vh * 0.9));
+      ctx.clearRect(0, 0, W, H);
+      if (strength < 0.01) return;
+      ctx.globalCompositeOperation = "screen";
+      for (const q of parts) {
+        q.life += q.speed;
+        q.y -= q.vy + dy * 0.25;
+        q.x += Math.sin(t / 1400 + q.ph) * q.amp;
+        q.rot += 0.002;
+        if (q.life >= 1 || q.y < -200) Object.assign(q, spawn(false));
+        const size = q.s0 * (1 + q.life * q.grow);
+        const a = Math.sin(q.life * Math.PI) * 0.22 * strength;
+        if (a < 0.003) continue;
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.translate(q.x, q.y); ctx.rotate(q.rot);
+        ctx.drawImage(sprites[q.spr], -size / 2, -size / 2, size, size);
+        ctx.restore();
+      }
+    };
+    requestAnimationFrame(tick);
+  }
+
   /* =========================================================
      BOOT
      ========================================================= */
@@ -1012,4 +1105,5 @@
   setupMotion();
   heroMotion();
   crazy();
+  steamBridge();
 })();
