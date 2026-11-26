@@ -636,3 +636,9 @@ html[lang="ar"] .visit .card h3 { letter-spacing: 0; font-size: 1.25rem; }
 @media (prefers-reduced-motion: reduce) {
   .floaters, .cursor-dot, .cursor-ring, .menu-float, .burst, .progress { display: none !important; }
 }
+
+/* hand-over between the pizza video and the pasta photo: both meet in black */
+.story__pin::after { content: ""; position: absolute; inset: 0; z-index: 6; background: #000; opacity: var(--exit, 0); pointer-events: none; }
+.story__pin::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 1; background: linear-gradient(180deg, transparent, #000); pointer-events: none; }
+.pasta::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 38%; z-index: 1; background: linear-gradient(180deg, #000 0%, rgba(0,0,0,.85) 30%, transparent 100%); pointer-events: none; }
+.pasta { background-color: #000; }

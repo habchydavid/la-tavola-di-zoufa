@@ -505,9 +505,12 @@
     const range = film.el.offsetHeight - innerHeight;
     const p = clamp(-r.top / range);
     const dur = v.duration || 0;
+    // last stretch of the scroll: the whole pinned frame fades to black so it hands over cleanly to the pasta
+    film.pin = film.pin || $(".story__pin");
+    if (film.pin) film.pin.style.setProperty("--exit", seg(p, 0.86, 0.98).toFixed(3));
     if (film.hint) film.hint.style.opacity = (1 - seg(p, 0.02, 0.12)).toFixed(2);
     if (!dur) { syncSteps(0, 13.4); return; }
-    const target = p * (dur - 0.05);
+    const target = clamp(p / 0.86) * (dur - 0.05);
     // ease towards the target so the video glides instead of jumping
     film.cur += (target - film.cur) * 0.22;
     if (Math.abs(target - film.cur) < 0.005) film.cur = target;
