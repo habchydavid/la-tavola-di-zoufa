@@ -383,39 +383,58 @@
      INTRO
      ========================================================= */
   function intro() {
-    // waiting page: stays black until fonts, the opening video and the first frame of every video are ready
+    // waiting page: the pizzaiolo pops up over the loading bar while the first screen loads
     const box = $("[data-loader]");
-    const bar = $("[data-loader-bar]");
-    let done = false;
-    const open = () => {
-      if (done) return; done = true;
-      if (bar) bar.style.transform = "scaleX(1)";
-      setTimeout(() => {
-        box.classList.add("is-done");
-        document.body.classList.remove("is-intro");
-        document.body.classList.add("is-ready");
-        window.__siteOpen = true;
-        window.dispatchEvent(new Event("site-open"));
-      }, 250);
+    const fill = $("[data-loader-fill]"), tip = $("[data-loader-tip]"), pctEl = $("[data-loader-pct]");
+    let target = 0, shown = 0, done = false, finished = false;
+    const render = () => {
+      const v = Math.round(shown);
+      fill.style.width = shown.toFixed(2) + "%";
+      tip.style.left = shown.toFixed(2) + "%";
+      pctEl.textContent = v;
+      box.setAttribute("aria-valuenow", v);
     };
+    const t0 = performance.now();
+    const step = (now) => {
+      if (finished) return;
+      // creep forward on its own so the bar never looks stuck, but never past 92% until really ready
+      const creep = Math.min(92, 18 + (now - t0) / 60);
+      const goal = done ? 100 : Math.max(target, Math.min(creep, target + 25));
+      shown += (goal - shown) * (done ? 0.22 : 0.08);
+      if (done && shown > 99.5) shown = 100;
+      render();
+      if (done && shown === 100) { finished = true; setTimeout(close, 180); return; }
+      requestAnimationFrame(step);
+    };
+    const close = () => {
+      box.classList.add("is-done");
+      document.body.classList.remove("is-intro");
+      document.body.classList.add("is-ready");
+      window.__siteOpen = true;
+      window.dispatchEvent(new Event("site-open"));
+    };
+    const open = () => { if (!done) done = true; };
+
+    // only wait for what the first screen needs; everything else keeps loading in the background
     const tasks = [];
     const add = (pr) => tasks.push(pr.catch(() => {}));
-    const media = (el, ev) => new Promise((res) => {
+    const media = (el) => new Promise((res) => {
       if (!el) return res();
-      const ok = ev === "canplaythrough" ? 4 : 2;
-      if (el.readyState >= ok) return res();
-      el.addEventListener(ev, res, { once: true });
+      if (el.readyState >= 4) return res();
+      el.addEventListener("canplaythrough", res, { once: true });
       el.addEventListener("error", res, { once: true });
     });
+    const img = (src) => new Promise((res) => { const im = new Image(); im.onload = im.onerror = res; im.src = src; });
     if (document.fonts && document.fonts.ready) add(document.fonts.ready);
-    add(media($(".opening__video"), "canplaythrough"));
-    $$("[data-reel] video").forEach((v) => add(media(v, "loadeddata")));
-    ["images/opening-pizza.png"].forEach((src) => add(new Promise((res) => { const im = new Image(); im.onload = im.onerror = res; im.src = src; })));
+    add(media($(".opening__video")));
+    add(img("images/opening-pizza.png"));
     let n = 0;
-    tasks.forEach((t) => t.then(() => { n++; if (bar) bar.style.transform = `scaleX(${(n / tasks.length).toFixed(3)})`; }));
-    const minWait = new Promise((r) => setTimeout(r, 700));
-    Promise.all([Promise.all(tasks), minWait]).then(open);
-    setTimeout(open, 15000); // never wait forever on a slow connection
+    tasks.forEach((t) => t.then(() => { n++; target = (n / tasks.length) * 100; }));
+    const minShow = new Promise((r) => setTimeout(r, reduced ? 0 : 900)); // long enough to see the chef pop up
+    Promise.all([Promise.all(tasks), minShow]).then(open);
+    setTimeout(open, 8000); // never wait forever on a slow connection
+    if (reduced) { shown = 100; done = true; render(); finished = true; close(); return; }
+    requestAnimationFrame(step);
   }
 
   /* =========================================================
@@ -1149,8 +1168,8 @@
       if (phase !== "video") return;
       phase = "spin";
       el.classList.add("is-spin");                        // the last-frame pizza starts spinning
-      setTimeout(() => { phase = "settle"; t0 = performance.now(); }, reduced ? 0 : 900);   // then slides down
-      setTimeout(() => el.classList.add("is-text"), reduced ? 0 : 1200);                   // and the name drops in
+      setTimeout(() => { phase = "settle"; t0 = performance.now(); }, reduced ? 0 : 280);   // then slides down
+      setTimeout(() => el.classList.add("is-text"), reduced ? 0 : 380);                    // and the name drops in
     };
     v.addEventListener("ended", finish);
     const toEnd = () => { try { v.currentTime = Math.max(0, (v.duration || 10) - 0.05); } catch {} };
@@ -1167,7 +1186,7 @@
 
     const tick = (now) => {
       requestAnimationFrame(tick);
-      if (phase === "settle") moveK = reduced ? 1 : easeOut(clamp((now - t0) / 1400));
+      if (phase === "settle") moveK = reduced ? 1 : easeOut(clamp((now - t0) / 950));
       const r = el.getBoundingClientRect();
       if (r.bottom < 0) return;
       layout();

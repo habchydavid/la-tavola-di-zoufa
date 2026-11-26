@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="images/chef.webp" type="image/webp" />
+  <link rel="preload" as="image" href="images/opening-pizza.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="is-intro">
@@ -56,8 +58,18 @@
   </svg>
 
   <!-- WAITING PAGE: full black while everything loads (design to come) -->
-  <div class="loader" data-loader aria-hidden="true">
-    <div class="loader__bar"><i data-loader-bar></i></div>
+  <div class="loader" data-loader role="progressbar" aria-label="Loading La Tavola di Zoufa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="loader__stage">
+      <div class="loader__spot" aria-hidden="true"></div>
+      <picture class="loader__chef" aria-hidden="true">
+        <source srcset="images/chef.webp" type="image/webp" />
+        <img src="images/chef.png" alt="" width="397" height="586" decoding="async" fetchpriority="high" />
+      </picture>
+      <div class="loader__track" aria-hidden="true">
+        <div class="loader__fill" data-loader-fill></div>
+        <div class="loader__tip" data-loader-tip><span data-loader-pct>0</span>%</div>
+      </div>
+    </div>
   </div>
 
   <!-- NAV -->
