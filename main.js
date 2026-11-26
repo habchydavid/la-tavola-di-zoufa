@@ -383,19 +383,39 @@
      INTRO
      ========================================================= */
   function intro() {
-    const box = $("[data-intro]");
+    // waiting page: stays black until fonts, the opening video and the first frame of every video are ready
+    const box = $("[data-loader]");
+    const bar = $("[data-loader-bar]");
     let done = false;
     const open = () => {
       if (done) return; done = true;
-      box.classList.add("is-open");
-      document.body.classList.remove("is-intro");
-      setTimeout(() => document.body.classList.add("is-ready"), 250);
-      setTimeout(() => box.classList.add("is-gone"), 1000);
+      if (bar) bar.style.transform = "scaleX(1)";
+      setTimeout(() => {
+        box.classList.add("is-done");
+        document.body.classList.remove("is-intro");
+        document.body.classList.add("is-ready");
+        window.__siteOpen = true;
+        window.dispatchEvent(new Event("site-open"));
+      }, 250);
     };
-    if (reduced) { open(); return; }
-    setTimeout(open, 2500);
-    box.addEventListener("click", open);
-    addEventListener("keydown", open, { once: true });
+    const tasks = [];
+    const add = (pr) => tasks.push(pr.catch(() => {}));
+    const media = (el, ev) => new Promise((res) => {
+      if (!el) return res();
+      const ok = ev === "canplaythrough" ? 4 : 2;
+      if (el.readyState >= ok) return res();
+      el.addEventListener(ev, res, { once: true });
+      el.addEventListener("error", res, { once: true });
+    });
+    if (document.fonts && document.fonts.ready) add(document.fonts.ready);
+    add(media($(".opening__video"), "canplaythrough"));
+    $$("[data-reel] video").forEach((v) => add(media(v, "loadeddata")));
+    ["images/opening-pizza.png"].forEach((src) => add(new Promise((res) => { const im = new Image(); im.onload = im.onerror = res; im.src = src; })));
+    let n = 0;
+    tasks.forEach((t) => t.then(() => { n++; if (bar) bar.style.transform = `scaleX(${(n / tasks.length).toFixed(3)})`; }));
+    const minWait = new Promise((r) => setTimeout(r, 700));
+    Promise.all([Promise.all(tasks), minWait]).then(open);
+    setTimeout(open, 15000); // never wait forever on a slow connection
   }
 
   /* =========================================================
@@ -1086,72 +1106,70 @@
 
 
   /* =========================================================
-     OPENING — the commercial plays as you scroll, its last-frame
-     pizza starts spinning, then the name drops in from the top
+     OPENING — the commercial plays by itself; when it ends its pizza
+     starts spinning, slides down, and the name drops in from the top
      ========================================================= */
   function opening() {
     const el = $("[data-opening]");
     if (!el) return;
     const cfg = SITE.openingVideo || {};
     const pin = $(".opening__pin", el), v = $(".opening__video", el), bg = $(".opening__bg", el);
-    const disc = $(".opening__disc", el), img = $("img", disc), shade = $(".opening__shade", el), hint = $(".opening__hint", el);
+    const disc = $(".opening__disc", el), shade = $(".opening__shade", el);
     const P = cfg.pizza || { cx: 244, cy: 458, r: 236 };
     [v, bg].forEach((x) => {
-      x.muted = true; x.playsInline = true; x.preload = "auto";
+      x.muted = true; x.playsInline = true; x.preload = "auto"; x.loop = false;
       if (cfg.src) x.src = cfg.src;
-      x.addEventListener("loadeddata", () => { x.play().then(() => x.pause()).catch(() => {}); }, { once: true });
     });
     if (cfg.poster) v.poster = cfg.poster;
-    // the text pieces drop one after another
-    $$(".hero__content > *", el).forEach((c, i) => c.style.setProperty("--k", i));
+    // bottom piece lands first, the name last, so nothing falls through what already landed
+    const pieces = $$(".hero__content > *", el);
+    pieces.forEach((c, i) => c.style.setProperty("--k", pieces.length - 1 - i));
 
-    let cur = 0, wasEnded = false;
-    const tick = () => {
-      requestAnimationFrame(tick);
-      const r = el.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) return;
-      const range = el.offsetHeight - innerHeight;
-      const p = clamp(-r.top / range);
-      const dur = v.duration || 0;
+    let phase = "video", moveK = 0, t0 = 0;
+    const layout = () => {
       const W = pin.clientWidth, H = pin.clientHeight;
       const vw = v.videoWidth || 496, vh = v.videoHeight || 864;
       const wide = W / H > 0.75;
       el.classList.toggle("is-wide", wide);
-
-      // 1) the video plays with the scroll
-      const vp = clamp(p / 0.5);
-      if (dur) {
-        const target = vp * (dur - 0.04);
-        cur += (target - cur) * 0.25;
-        if (Math.abs(target - cur) < 0.004) cur = target;
-        if (!v.seeking && Math.abs(v.currentTime - cur) > 0.015) v.currentTime = cur;
-        if (wide && !bg.seeking && Math.abs(bg.currentTime - cur) > 0.12) bg.currentTime = cur;
-      }
-      // 2) at the last frame the cut-out pizza takes over and spins
-      const ended = dur > 0 && vp > 0.995 && cur >= dur - 0.12;
-      if (ended !== wasEnded) {
-        el.classList.toggle("is-spin", ended);
-        if (!ended) { img.style.animation = "none"; void img.offsetWidth; img.style.animation = ""; }
-        wasEnded = ended;
-      }
-      // place the cut-out exactly over the pizza in the frame
       const sc = wide ? Math.min(W / vw, H / vh) : Math.max(W / vw, H / vh);
       const x0 = (W - vw * sc) / 2, y0 = (H - vh * sc) / 2;
       const size = 2 * P.r * sc, left = x0 + (P.cx - P.r) * sc, top = y0 + (P.cy - P.r) * sc;
-      // 3) then it slides down like a plate on the table while the scene darkens
-      const moveK = easeOut(seg(p, 0.56, 0.74));
       const endScale = wide ? 1.05 : 0.95;
       const endTop = H - size * endScale * 0.48;
       disc.style.width = disc.style.height = size.toFixed(1) + "px";
       disc.style.left = left.toFixed(1) + "px";
       disc.style.top = top.toFixed(1) + "px";
       disc.style.transform = `translate3d(0, ${(moveK * (endTop - top)).toFixed(1)}px, 0) scale(${(1 + moveK * (endScale - 1)).toFixed(3)})`;
-      shade.style.opacity = (moveK * 0.85).toFixed(3);
-      v.style.opacity = (1 - moveK * 0.92).toFixed(3);
-      bg.style.opacity = (1 - moveK * 0.5).toFixed(3);
-      // 4) the name and buttons fall in from the top
-      el.classList.toggle("is-text", p > 0.62);
-      if (hint) hint.style.opacity = (1 - seg(p, 0.01, 0.06)).toFixed(2);
+      const fade = clamp(moveK * 3.5); // the frame behind fades out quickly so there is only one pizza
+      shade.style.opacity = (fade * 0.85).toFixed(3);
+      v.style.opacity = (1 - fade * 0.95).toFixed(3);
+      bg.style.opacity = (1 - fade * 0.5).toFixed(3);
+    };
+    const finish = () => {
+      if (phase !== "video") return;
+      phase = "spin";
+      el.classList.add("is-spin");                        // the last-frame pizza starts spinning
+      setTimeout(() => { phase = "settle"; t0 = performance.now(); }, reduced ? 0 : 900);   // then slides down
+      setTimeout(() => el.classList.add("is-text"), reduced ? 0 : 1200);                   // and the name drops in
+    };
+    v.addEventListener("ended", finish);
+    const toEnd = () => { try { v.currentTime = Math.max(0, (v.duration || 10) - 0.05); } catch {} };
+    const start = () => {
+      if (reduced) { toEnd(); finish(); return; }
+      const pr = v.play();
+      if (pr && pr.catch) pr.catch(() => { toEnd(); finish(); });
+      bg.play().catch(() => {});
+      // if the phone refuses to play videos (e.g. battery saver), skip straight to the ending
+      setTimeout(() => { if (phase === "video" && v.paused && v.currentTime < 0.1) { toEnd(); finish(); } }, 1800);
+    };
+    if (window.__siteOpen) start(); else window.addEventListener("site-open", start, { once: true });
+
+    const tick = (now) => {
+      requestAnimationFrame(tick);
+      if (phase === "settle") moveK = reduced ? 1 : easeOut(clamp((now - t0) / 1400));
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0) return;
+      layout();
     };
     requestAnimationFrame(tick);
   }

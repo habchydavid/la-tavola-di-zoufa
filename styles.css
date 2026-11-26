@@ -706,3 +706,14 @@ body .opening .flourish--draw use { stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: reduce) {
   body .opening .hero__content > * { transition: none !important; }
 }
+
+/* waiting page: full black while everything loads */
+.loader { position: fixed; inset: 0; z-index: 100; background: #000; transition: opacity .8s ease, visibility .8s; }
+.loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader__bar { position: absolute; left: 50%; bottom: 56px; width: 120px; height: 1px; transform: translateX(-50%); background: rgba(230, 190, 90, .12); overflow: hidden; }
+.loader__bar i { position: absolute; inset: 0; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .4s ease; }
+
+/* the opening is now a normal full-screen video, no scrolling needed */
+.opening { height: 100svh; }
+.opening__pin { position: relative; height: 100svh; }
+@media (max-width: 860px) { .opening { height: 100svh; } }
