@@ -376,6 +376,7 @@
     renderHours();
     renderContact();
     updateSoundLabel();
+    splitTitles();
   }
 
   /* =========================================================
@@ -523,6 +524,12 @@
     if (idx !== film.active) {
       film.active = idx;
       film.steps.forEach((li, i) => li.classList.toggle("is-active", i === idx));
+      if (film.ghost) {
+        film.ghost.textContent = ["I", "II", "III", "IV", "V"][idx] || "";
+        if (!reduced) film.ghost.animate(
+          [{ opacity: 0, transform: "translateY(-50%) scale(1.25) rotate(-4deg)" }, { opacity: 1, transform: "translateY(-50%) scale(1) rotate(0deg)" }],
+          { duration: 900, easing: "cubic-bezier(.23, 1, .32, 1)" });
+      }
     }
     film.dots.forEach((d, i) => {
       const end = i + 1 < T.length ? T[i + 1] : dur;
@@ -551,10 +558,11 @@
         el.style.transitionDelay = `${si * 120}ms`;
         el.innerHTML = `<div class="msec__head"><h3 class="banner">${esc(tr(sec.title))}</h3></div><ul class="msec__list"></ul>`;
         const ul = $(".msec__list", el);
-        sec.items.forEach((it) => {
+        sec.items.forEach((it, ii) => {
           const s0 = seed++;
           const li = document.createElement("li");
           li.className = "mi" + (it.featured ? " mi--featured" : "");
+          li.style.setProperty("--i", ii);
           const canDraw = it.draw && (sec.art === "pizza" || sec.art === "pasta");
           const inner = `
             <span class="mi__row"><span class="mi__name" lang="${typeof it.name === "string" ? "it" : lang}">${esc(tr(it.name))}</span><span class="mi__dots"></span><span class="mi__price">${it.price} ${SITE.currency}</span></span>
@@ -602,6 +610,8 @@
       fig.className = "polaroid";
       fig.dataset.i = i;
       fig.style.setProperty("--r", `${ROT[i % ROT.length]}deg`);
+      fig.style.setProperty("--i", i);
+      fig.style.setProperty("--fx", `${((i % 3) - 1) * 22}vw`);
       if (keep[i]) { fig.style.setProperty("--x", keep[i][0]); fig.style.setProperty("--y", keep[i][1]); }
       const cap = esc(tr(ph.caption));
       let media;
@@ -725,6 +735,75 @@
   }
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
 
+
+  /* =========================================================
+     MOTION — reveals, parallax, tilt (all off with reduced motion)
+     ========================================================= */
+  function splitTitles() {
+    $$(".title").forEach((el) => {
+      const txt = el.textContent.trim();
+      el.innerHTML = txt.split(/\s+/).map((w, i) => `<span class="w"><span style="--i:${i}">${esc(w)}</span></span>`).join(" ");
+    });
+  }
+  let revealObs;
+  function setupMotion() {
+    // stagger the children of these groups as they scroll in
+    [".ribbon__track", ".pasta__copy", ".section-head", ".visit__sign", ".visit__grid", ".footer", ".menu__head"].forEach((g) =>
+      $$(g).forEach((box) => [...box.children].forEach((c, i) => {
+        if (c.classList.contains("title")) return;
+        c.setAttribute("data-reveal", "");
+        c.style.setProperty("--d", `${i * 90}ms`);
+      })));
+    // the Aperto / Chiuso letters light up one by one
+    $$(".opensign__word").forEach((w) => {
+      w.innerHTML = [...w.textContent].map((c, i) => `<span class="c" style="--i:${i}">${esc(c)}</span>`).join("");
+    });
+    // giant numeral behind the video steps
+    const pin = $(".story__pin");
+    if (pin) { film.ghost = document.createElement("span"); film.ghost.className = "story__ghost"; film.ghost.setAttribute("aria-hidden", "true"); film.ghost.textContent = "I"; pin.prepend(film.ghost); }
+
+    const targets = [...$$("[data-reveal]"), ...$$(".title"), $("[data-wall]"), $(".pasta"), $("[data-opensign]")].filter(Boolean);
+    if (reduced || !("IntersectionObserver" in window)) {
+      targets.forEach((t) => t.classList.add("is-in", "is-settled"));
+      return;
+    }
+    revealObs = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("is-in");
+      if (e.target.matches("[data-wall]")) setTimeout(() => e.target.classList.add("is-settled"), 2200);
+      revealObs.unobserve(e.target);
+    }), { threshold: 0.15, rootMargin: "0px 0px -6% 0px" });
+    targets.forEach((t) => revealObs.observe(t));
+  }
+
+  function heroMotion() {
+    if (reduced) return;
+    const hero = $(".hero"), content = $(".hero__content"), stage = $(".hero__stage"), board = $(".hero__board");
+    let mx = 0, my = 0, tx = 0, ty = 0;
+    if (finePointer) {
+      hero.addEventListener("pointermove", (e) => {
+        const r = hero.getBoundingClientRect();
+        mx = (e.clientX - r.left) / r.width - 0.5;
+        my = (e.clientY - r.top) / r.height - 0.5;
+      });
+      hero.addEventListener("pointerleave", () => { mx = 0; my = 0; });
+    }
+    const tick = () => {
+      requestAnimationFrame(tick);
+      const y = scrollY, h = innerHeight;
+      if (y > h * 1.3) return;
+      tx += (mx - tx) * 0.06; ty += (my - ty) * 0.06;
+      content.style.transform = `translate3d(0, ${(y * 0.35).toFixed(1)}px, 0)`;
+      content.style.opacity = (1 - clamp(y / (h * 0.75))).toFixed(3);
+      stage.style.transform = `translate3d(${(tx * 34).toFixed(1)}px, ${(-y * 0.12).toFixed(1)}px, 0)`;
+      board.style.setProperty("--tz", `${(tx * 10).toFixed(2)}deg`);
+      board.style.setProperty("--tx", `${(ty * -10).toFixed(2)}deg`);
+      const svg = $("[data-hero-pizza] svg");
+      if (svg) svg.style.transform = `rotate(${(y * 0.3).toFixed(1)}deg) scale(${(1 + (y / h) * 0.18).toFixed(3)})`;
+    };
+    requestAnimationFrame(tick);
+  }
+
   /* =========================================================
      BOOT
      ========================================================= */
@@ -743,4 +822,6 @@
   setInterval(renderStatus, 60000);
   intro();
   embers();
+  setupMotion();
+  heroMotion();
 })();
