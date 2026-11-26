@@ -119,6 +119,7 @@
 
     <!-- STORY: the real video, blending into black, steps follow along -->
     <section class="story" id="story" data-story>
+      <div class="story__pin">
       <div class="film">
         <video class="film__video" data-film muted loop playsinline preload="metadata" aria-label="How we make our pizza"></video>
         <div class="film__bar" aria-hidden="true"><i data-film-bar></i></div>
@@ -135,7 +136,8 @@
         <div class="dots" data-story-dots>
           <button aria-label="1"></button><button aria-label="2"></button><button aria-label="3"></button><button aria-label="4"></button><button aria-label="5"></button>
         </div>
-        <button class="film__sound" data-sound aria-pressed="false"><span class="film__icon" aria-hidden="true"></span><span data-sound-label></span></button>
+        <p class="story__hint" data-story-hint data-i18n="story.hint">Scroll to watch it come together ↓</p>
+      </div>
       </div>
     </section>
 

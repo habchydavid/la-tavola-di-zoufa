@@ -464,56 +464,62 @@
   }
 
   /* =========================================================
-     STORY — the real video, the steps follow along
+     STORY — the pizza video plays as you scroll
      ========================================================= */
   const film = {};
   function setupFilm() {
     const cfg = SITE.storyVideo || {};
     const v = (film.v = $("[data-film]"));
+    film.el = $("[data-story]");
     film.steps = $$("[data-steps] li");
     film.dots = $$("[data-story-dots] button");
-    film.bar = $("[data-film-bar]");
-    film.sound = $("[data-sound]");
+    film.hint = $("[data-story-hint]");
     film.times = cfg.steps || [0];
     film.active = -1;
+    film.cur = 0;
+    v.muted = true;
+    v.preload = "auto";
     if (cfg.poster) v.poster = cfg.poster;
     const big = cfg.srcHD && matchMedia("(min-width: 861px)").matches;
     if (cfg.src) v.src = big ? cfg.srcHD : cfg.src;
-    if (reduced) v.controls = true;
+    // some phones only allow seeking after the video has "played" once
+    v.addEventListener("loadeddata", () => { v.play().then(() => v.pause()).catch(() => {}); }, { once: true });
 
-    film.sound.addEventListener("click", () => {
-      v.muted = !v.muted;
-      if (!v.muted && v.paused) v.play().catch(() => {});
-      updateSoundLabel();
-    });
+    // tapping a step bar scrolls to that moment
     film.dots.forEach((d, i) => d.addEventListener("click", () => {
-      v.currentTime = (film.times[i] || 0) + 0.05;
-      if (v.paused) v.play().catch(() => {});
+      const dur = v.duration || 13.4;
+      const range = film.el.offsetHeight - innerHeight;
+      const y = film.el.offsetTop + range * clamp((film.times[i] || 0) / dur + 0.005);
+      scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
     }));
-    // play only while on screen
-    if ("IntersectionObserver" in window && !reduced) {
-      new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) v.play().catch(() => {});
-        else v.pause();
-      }, { threshold: 0.35 }).observe(v);
-    }
-    const loop = () => { syncFilm(); requestAnimationFrame(loop); };
+
+    const loop = () => { scrubFilm(); requestAnimationFrame(loop); };
     requestAnimationFrame(loop);
   }
-  function updateSoundLabel() {
-    if (!film.sound) return;
-    const on = !film.v.muted;
-    film.sound.setAttribute("aria-pressed", String(on));
-    $("[data-sound-label]").textContent = on ? t("story.soundOff") : t("story.soundOn");
-  }
-  function syncFilm() {
+  function updateSoundLabel() {}
+  function scrubFilm() {
     const v = film.v;
+    const r = film.el.getBoundingClientRect();
+    if (r.bottom < -50 || r.top > innerHeight + 50) return; // off screen
+    const range = film.el.offsetHeight - innerHeight;
+    const p = clamp(-r.top / range);
     const dur = v.duration || 0;
-    if (!dur) return;
-    const now = v.currentTime;
+    if (film.hint) film.hint.style.opacity = (1 - seg(p, 0.02, 0.12)).toFixed(2);
+    if (!dur) { syncSteps(0, 13.4); return; }
+    const target = p * (dur - 0.05);
+    // ease towards the target so the video glides instead of jumping
+    film.cur += (target - film.cur) * 0.22;
+    if (Math.abs(target - film.cur) < 0.005) film.cur = target;
+    if (!v.seeking && Math.abs(v.currentTime - film.cur) > 0.015) {
+      if (typeof v.fastSeek === "function" && Math.abs(v.currentTime - film.cur) > 1) v.fastSeek(film.cur);
+      else v.currentTime = film.cur;
+    }
+    syncSteps(film.cur, dur);
+  }
+  function syncSteps(now, dur) {
     const T = film.times;
     let idx = 0;
-    for (let i = 0; i < T.length; i++) if (now >= T[i]) idx = i;
+    for (let i = 0; i < T.length; i++) if (now >= T[i] - 0.001) idx = i;
     if (idx !== film.active) {
       film.active = idx;
       film.steps.forEach((li, i) => li.classList.toggle("is-active", i === idx));
@@ -522,7 +528,6 @@
       const end = i + 1 < T.length ? T[i + 1] : dur;
       d.style.setProperty("--fill", clamp((now - T[i]) / (end - T[i])).toFixed(3));
     });
-    film.bar.style.transform = `scaleX(${(now / dur).toFixed(4)})`;
   }
 
   /* =========================================================

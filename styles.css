@@ -219,15 +219,17 @@ html[lang="ar"] .nav__links { letter-spacing: 0; font-size: 1.1rem; }
 
 
 /* ---------- STORY (video blending into black) ---------- */
-.story {
-  position: relative; overflow: hidden;
-  min-height: max(100svh, 640px);
+/* the section is tall; the inner "pin" stays on screen while you scroll and the video follows the scroll */
+.story { position: relative; height: 420vh; background: #000; }
+.story__pin {
+  position: sticky; top: 0; height: 100svh; overflow: hidden;
   display: flex; align-items: center;
   padding: calc(var(--nav-h) + 2rem) var(--gutter) 3rem;
   /* black on the far side, getting lighter towards the video */
   background: linear-gradient(90deg, #000 0%, #050404 30%, #120e0c 52%, #1c1511 68%, #000 100%);
 }
-[dir="rtl"] .story { background: linear-gradient(270deg, #000 0%, #050404 30%, #120e0c 52%, #1c1511 68%, #000 100%); }
+[dir="rtl"] .story__pin { background: linear-gradient(270deg, #000 0%, #050404 30%, #120e0c 52%, #1c1511 68%, #000 100%); }
+.story__hint { margin-top: 1.6rem; font-style: italic; color: var(--gold); font-size: 1.1rem; transition: opacity .4s; }
 
 .film {
   position: absolute; top: 0; bottom: 0; right: 0; width: max(66%, 620px);
@@ -281,7 +283,9 @@ html[lang="ar"] .film__sound { letter-spacing: 0; font-size: .95rem; }
 
 /* phones: same look as computers, black curve on the left, video on the right */
 @media (max-width: 860px) {
-  .story { min-height: 100svh; padding: calc(var(--nav-h) + 1rem) var(--gutter) 2rem; }
+  .story { height: 360vh; }
+  .story__pin { padding: calc(var(--nav-h) + 1rem) var(--gutter) 2rem; }
+  .story__hint { margin-top: 1rem; font-size: 1rem; text-shadow: 0 1px 10px #000; }
   .film { left: 22%; right: 0; width: auto; }
   [dir="rtl"] .film { left: 0; right: 22%; }
   .film::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #000 0%, rgba(0,0,0,.8) 22%, rgba(0,0,0,.35) 48%, transparent 70%); }

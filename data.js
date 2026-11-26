@@ -164,6 +164,7 @@ window.TEXT = {
     "story.s4p": "Into our gas oven at 450°C. In about ninety seconds the crust puffs up and gets its golden, blistered edge.",
     "story.s5t": "The finish",
     "story.s5p": "Sliced, topped with fresh basil, and straight to your table.",
+    "story.hint": "Scroll to watch it come together ↓",
     "story.soundOn": "Sound on", "story.soundOff": "Sound off",
 
     "pasta.eyebrow": "And the pasta",
@@ -218,6 +219,7 @@ window.TEXT = {
     "story.s4p": "Direction notre four à gaz, à 450 °C. En quatre-vingt-dix secondes environ, la croûte gonfle et se dore.",
     "story.s5t": "La touche finale",
     "story.s5p": "Découpée, garnie de basilic frais, et directement à votre table.",
+    "story.hint": "Faites défiler pour la voir prendre forme ↓",
     "story.soundOn": "Activer le son", "story.soundOff": "Couper le son",
 
     "pasta.eyebrow": "Et les pâtes",
@@ -272,6 +274,7 @@ window.TEXT = {
     "story.s4p": "إلى فرن الغاز على حرارة ٤٥٠ درجة. خلال تسعين ثانية تقريباً تنتفخ الأطراف وتصبح ذهبية ومقرمشة.",
     "story.s5t": "اللمسة الأخيرة",
     "story.s5p": "تُقطَّع، يُضاف إليها الحبق الطازج، ثم مباشرة إلى طاولتك.",
+    "story.hint": "مرّر للأسفل لتشاهدها تتحضّر ↓",
     "story.soundOn": "شغّل الصوت", "story.soundOff": "اكتم الصوت",
 
     "pasta.eyebrow": "والباستا",
