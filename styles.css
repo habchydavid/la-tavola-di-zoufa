@@ -717,3 +717,12 @@ body .opening .flourish--draw use { stroke-dashoffset: 0; }
 .opening { height: 100svh; }
 .opening__pin { position: relative; height: 100svh; }
 @media (max-width: 860px) { .opening { height: 100svh; } }
+
+/* menu: dish names show right away; only the dotted lines and prices animate, quickly */
+.msec, .msec .mi { opacity: 1 !important; transform: none !important; }
+.msec .banner, [dir="rtl"] .msec .banner { clip-path: none !important; }
+.msec .mi__dots { transition: transform .6s var(--eo) calc(var(--i, 0) * 40ms + 80ms); }
+.msec .mi__price { display: inline-block; opacity: 0; transform: translateX(10px); transition: opacity .4s ease calc(var(--i, 0) * 40ms + 300ms), transform .5s var(--eo) calc(var(--i, 0) * 40ms + 300ms); }
+[dir="rtl"] .msec .mi__price { transform: translateX(-10px); }
+.msec.is-in .mi__price { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .msec .mi__price { opacity: 1; transform: none; } }
