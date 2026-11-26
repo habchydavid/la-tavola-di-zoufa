@@ -35,7 +35,8 @@ window.SITE = {
      dough, tomato, mozzarella, oven, finish.
   */
   storyVideo: {
-    src: "images/how-its-made.mp4",
+    src: "images/how-its-made.mp4",       // used on phones (lighter)
+    srcHD: "images/how-its-made-hd.mp4",  // used on computers (sharper)
     poster: "images/how-its-made.jpg",
     steps: [0, 4.1, 5.07, 8.13, 11.23],
   },

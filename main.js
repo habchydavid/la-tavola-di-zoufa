@@ -477,7 +477,8 @@
     film.times = cfg.steps || [0];
     film.active = -1;
     if (cfg.poster) v.poster = cfg.poster;
-    if (cfg.src) v.src = cfg.src;
+    const big = cfg.srcHD && matchMedia("(min-width: 861px)").matches;
+    if (cfg.src) v.src = big ? cfg.srcHD : cfg.src;
     if (reduced) v.controls = true;
 
     film.sound.addEventListener("click", () => {
