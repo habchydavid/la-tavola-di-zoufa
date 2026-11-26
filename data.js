@@ -34,6 +34,14 @@ window.SITE = {
      steps: the second (in the video) where each of the 5 steps starts:
      dough, tomato, mozzarella, oven, finish.
   */
+  /* ---------------- OPENING VIDEO (first thing on the page, plays as you scroll) ----------------
+     pizza: where the pizza sits in the LAST frame of the video (in video pixels),
+     so the spinning cut-out (images/opening-pizza.png) lines up exactly.
+  */
+  openingVideo: {
+    src: "images/opening.mp4", poster: "images/opening.jpg",
+    pizza: { cx: 244, cy: 458, r: 236 },
+  },
   pastaVideo: {
     src: "images/pasta-video.mp4", srcHD: "images/pasta-video-hd.mp4", poster: "images/pasta-video.jpg",
     steps: [0, 2.0, 4.0, 6.0, 7.2],   // mushrooms, cream, seasoning, pasta, toss
