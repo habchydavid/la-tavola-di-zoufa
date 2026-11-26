@@ -541,6 +541,15 @@
      MENU BOARD
      ========================================================= */
   let menuObserver;
+  // a real photo when the dish has one, otherwise the drawing
+  function dishArt(sec, it, seed) {
+    if (it.photo) {
+      const img = document.createElement("img");
+      img.className = "mi__photo"; img.src = it.photo; img.alt = tr(it.name); img.loading = "lazy"; img.draggable = false;
+      return img;
+    }
+    return (sec.art === "pizza" ? makePizza({ seed, ...it.draw }) : makePasta({ seed, ...it.draw })).svg;
+  }
   function renderMenu() {
     const grid = $("[data-menu]");
     grid.innerHTML = "";
@@ -563,17 +572,17 @@
           const li = document.createElement("li");
           li.className = "mi" + (it.featured ? " mi--featured" : "");
           li.style.setProperty("--i", ii);
-          const canDraw = it.draw && (sec.art === "pizza" || sec.art === "pasta");
+          const canDraw = (it.photo || it.draw) && (sec.art === "pizza" || sec.art === "pasta");
           const inner = `
             <span class="mi__row"><span class="mi__name" lang="${typeof it.name === "string" ? "it" : lang}">${esc(tr(it.name))}</span><span class="mi__dots"></span><span class="mi__price">${it.price} ${SITE.currency}</span></span>
             ${it.desc ? `<span class="mi__desc">(${esc(tr(it.desc))})</span>` : ""}`;
           if (canDraw) {
             li.innerHTML = `<button class="mi__btn" aria-expanded="false">${inner}</button><div class="mi__panel"><div><div class="mi__art"></div></div></div>`;
             const btn = $(".mi__btn", li);
-            btn._draw = () => (sec.art === "pizza" ? makePizza({ seed: s0, ...it.draw }) : makePasta({ seed: s0, ...it.draw })).svg;
+            btn._draw = () => dishArt(sec, it, s0);
             btn.addEventListener("click", () => {
               const art = $(".mi__art", li);
-              if (!art.firstChild) art.appendChild(sec.art === "pizza" ? makePizza({ seed: s0, ...it.draw }).svg : makePasta({ seed: s0, ...it.draw }).svg);
+              if (!art.firstChild) art.appendChild(dishArt(sec, it, s0));
               const open = !li.classList.contains("is-open");
               $$(".mi.is-open", ul).forEach((o) => { o.classList.remove("is-open"); $(".mi__btn", o).setAttribute("aria-expanded", "false"); });
               li.classList.toggle("is-open", open);

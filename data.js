@@ -47,6 +47,8 @@ window.SITE = {
      • price: number
      • featured: true  → shown in gold, like on the printed menu
      • desc: optional, { en, fr, ar }
+     • photo: optional, e.g. "images/menu/pizza-diavola.jpg" (a square photo works best).
+       When a dish has a photo it is shown instead of the drawing.
      • draw: optional. Pizza and pasta items with "draw" can be tapped
        to show a little illustration.
          pizza  sauce: "red" | "white" | "pesto"   cheese: true | false
@@ -63,13 +65,13 @@ window.SITE = {
       title: { en: "Pizza", fr: "Pizza", ar: "بيتزا" },
       items: [
         { name: "Pizza Marguerita", price: 11, draw: { sauce: "red", cheese: true, toppings: ["basil", "tomato"] } },
-        { name: "Pizza Diavola", price: 13, draw: { sauce: "red", cheese: true, toppings: ["salami", "chili"] } },
-        { name: "Pizza Truffle", price: 15, draw: { sauce: "white", cheese: true, toppings: ["mushroom", "truffle"] } },
-        { name: "Pizza Regina", price: 14, draw: { sauce: "red", cheese: true, toppings: ["prosciutto", "mushroom", "olive"] } },
-        { name: "Pizza Quattro", price: 13, draw: { sauce: "white", cheese: true, toppings: ["gorgonzola", "parm"] } },
+        { name: "Pizza Diavola", price: 13, photo: "images/menu/pizza-diavola.jpg", draw: { sauce: "red", cheese: true, toppings: ["salami", "chili"] } },
+        { name: "Pizza Truffle", price: 15, photo: "images/menu/pizza-truffle.jpg", draw: { sauce: "white", cheese: true, toppings: ["mushroom", "truffle"] } },
+        { name: "Pizza Regina", price: 14, photo: "images/menu/pizza-regina.jpg", draw: { sauce: "red", cheese: true, toppings: ["prosciutto", "mushroom", "olive"] } },
+        { name: "Pizza Quattro", price: 13, photo: "images/menu/pizza-quattro.jpg", draw: { sauce: "white", cheese: true, toppings: ["gorgonzola", "parm"] } },
         { name: "Pizza Burrata", price: 22, featured: true, draw: { sauce: "red", cheese: false, toppings: ["burrata", "tomato", "basil"] } },
-        { name: "Pizza Bresaola", price: 25, featured: true, draw: { sauce: "red", cheese: true, toppings: ["bresaola", "rucola", "parm"] } },
-        { name: "Pizza Pesto", price: 13, featured: true, draw: { sauce: "pesto", cheese: true, toppings: ["tomato", "basil"] } },
+        { name: "Pizza Bresaola", price: 25, photo: "images/menu/pizza-bresaola.jpg", featured: true, draw: { sauce: "red", cheese: true, toppings: ["bresaola", "rucola", "parm"] } },
+        { name: "Pizza Pesto", price: 13, photo: "images/menu/pizza-pesto.jpg", featured: true, draw: { sauce: "pesto", cheese: true, toppings: ["tomato", "basil"] } },
       ],
     },
     {
@@ -80,7 +82,7 @@ window.SITE = {
         { name: "Pasta Alfredo", price: 13, draw: { sauce: "cream", extras: ["parm", "parsley"] } },
         { name: "Pasta Truffle", price: 14, draw: { sauce: "cream", extras: ["truffle", "parm"] } },
         { name: "Pasta Gluten Free", price: 14, draw: { sauce: "red", extras: ["basil", "parm"] } },
-        { name: "Pasta Pink Sauce", price: 14, draw: { sauce: "pink", extras: ["parm", "basil"] } },
+        { name: "Pasta Pink Sauce", price: 14, photo: "images/menu/pasta-pink-sauce.jpg", draw: { sauce: "pink", extras: ["parm", "basil"] } },
       ],
     },
     {
