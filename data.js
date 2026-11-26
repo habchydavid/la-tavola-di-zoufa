@@ -40,6 +40,7 @@ window.SITE = {
   */
   openingVideo: {
     src: "images/opening.mp4", poster: "images/opening.jpg",
+    speed: 1.5,   // 1 = normal speed, 1.5 = 50% faster, 2 = twice as fast
     pizza: { cx: 244, cy: 458, r: 236 },
   },
   pastaVideo: {

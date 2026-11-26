@@ -1156,6 +1156,7 @@
     const toEnd = () => { try { v.currentTime = Math.max(0, (v.duration || 10) - 0.05); } catch {} };
     const start = () => {
       if (reduced) { toEnd(); finish(); return; }
+      v.playbackRate = bg.playbackRate = cfg.speed || 1;
       const pr = v.play();
       if (pr && pr.catch) pr.catch(() => { toEnd(); finish(); });
       bg.play().catch(() => {});
