@@ -39,7 +39,7 @@ window.SITE = {
      so the spinning cut-out (images/opening-pizza.png) lines up exactly.
   */
   openingVideo: {
-    src: "images/opening.mp4", poster: "images/opening.jpg",
+    src: "images/opening.mp4?v=2", poster: "images/opening.jpg",
     speed: 1,     // the file itself is already sped up to ~4.5 s; 1 = play it as is
     pizza: { cx: 244, cy: 458, r: 236 },
   },
