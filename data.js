@@ -78,7 +78,7 @@ window.SITE = {
       id: "pasta", art: "pasta",
       title: { en: "Pasta", fr: "Pâtes", ar: "باستا" },
       items: [
-        { name: "Pasta Arrabiata", price: 9, draw: { sauce: "red", extras: ["chili", "parsley"] } },
+        { name: "Pasta Arrabiata", price: 9, photo: "images/menu/pasta-arrabiata.jpg", draw: { sauce: "red", extras: ["chili", "parsley"] } },
         { name: "Pasta Alfredo", price: 13, draw: { sauce: "cream", extras: ["parm", "parsley"] } },
         { name: "Pasta Truffle", price: 14, draw: { sauce: "cream", extras: ["truffle", "parm"] } },
         { name: "Pasta Gluten Free", price: 14, draw: { sauce: "red", extras: ["basil", "parm"] } },
@@ -90,7 +90,7 @@ window.SITE = {
       title: { en: "Sandwich Baguette", fr: "Sandwich Baguette", ar: "سندويش باغيت" },
       items: [
         {
-          name: "Chicken Baguette", price: 7, featured: true,
+          name: "Chicken Baguette", price: 7, photo: "images/menu/baguette.jpg", featured: true,
           desc: {
             en: "Grilled chicken, lettuce, tomato, mozzarella, avocado sauce",
             fr: "Poulet grillé, laitue, tomate, mozzarella, sauce avocat",
@@ -98,7 +98,7 @@ window.SITE = {
           },
         },
         {
-          name: "Turkey Baguette", price: 5, featured: true,
+          name: "Turkey Baguette", price: 5, photo: "images/menu/baguette.jpg", featured: true,
           desc: {
             en: "Smoked turkey, lettuce, tomato, cheese, mayo mustard, pickles",
             fr: "Dinde fumée, laitue, tomate, fromage, mayonnaise moutarde, cornichons",

@@ -572,7 +572,7 @@
           const li = document.createElement("li");
           li.className = "mi" + (it.featured ? " mi--featured" : "");
           li.style.setProperty("--i", ii);
-          const canDraw = (it.photo || it.draw) && (sec.art === "pizza" || sec.art === "pasta");
+          const canDraw = it.photo || (it.draw && (sec.art === "pizza" || sec.art === "pasta"));
           const inner = `
             <span class="mi__row"><span class="mi__name" lang="${typeof it.name === "string" ? "it" : lang}">${esc(tr(it.name))}</span><span class="mi__dots"></span><span class="mi__price">${it.price} ${SITE.currency}</span></span>
             ${it.desc ? `<span class="mi__desc">(${esc(tr(it.desc))})</span>` : ""}`;
