@@ -166,7 +166,7 @@ window.SITE = {
 window.TEXT = {
   en: {
     "pv.h2": "How we make our pasta",
-    "pv.s1t": "The mushrooms",
+    "pv.s1t": "Pasta Alfredo",
     "pv.s1p": "Sliced mushrooms, sizzling in the pan.",
     "pv.s2t": "The cream",
     "pv.s2p": "A generous pour of cream, simmered until silky.",
@@ -193,7 +193,7 @@ window.TEXT = {
 
     "story.eyebrow": "How it's made",
     "story.oven": "Oven", "story.time": "Time",
-    "story.s1t": "The dough",
+    "story.s1t": "The pizza",
     "story.s1p": "Flour, water, salt and yeast, then a long, slow rest. Every ball is stretched by hand, never with a rolling pin.",
     "story.s2t": "The tomato",
     "story.s2p": "Ripe tomatoes crushed with a pinch of salt. That's all. Good tomatoes don't need help.",
@@ -241,7 +241,7 @@ window.TEXT = {
 
   fr: {
     "pv.h2": "Comment on prépare nos pâtes",
-    "pv.s1t": "Les champignons",
+    "pv.s1t": "Pâtes Alfredo",
     "pv.s1p": "Des champignons émincés qui grésillent dans la poêle.",
     "pv.s2t": "La crème",
     "pv.s2p": "Une belle dose de crème, mijotée jusqu'à devenir onctueuse.",
@@ -268,7 +268,7 @@ window.TEXT = {
 
     "story.eyebrow": "Comment on la fait",
     "story.oven": "Four", "story.time": "Temps",
-    "story.s1t": "La pâte",
+    "story.s1t": "La pizza",
     "story.s1p": "Farine, eau, sel et levure, puis un long repos. Chaque pâton est étiré à la main, jamais au rouleau.",
     "story.s2t": "La tomate",
     "story.s2p": "Des tomates mûres écrasées avec une pincée de sel. C'est tout. Une bonne tomate n'a besoin de rien d'autre.",
@@ -316,7 +316,7 @@ window.TEXT = {
 
   ar: {
     "pv.h2": "كيف نحضّر الباستا",
-    "pv.s1t": "الفطر",
+    "pv.s1t": "باستا ألفريدو",
     "pv.s1p": "فطر مقطّع شرائح يُقلى في المقلاة.",
     "pv.s2t": "الكريما",
     "pv.s2p": "كمية سخية من الكريما تُطهى على نار هادئة حتى تصبح ناعمة.",
@@ -343,7 +343,7 @@ window.TEXT = {
 
     "story.eyebrow": "كيف نحضّرها",
     "story.oven": "الفرن", "story.time": "الوقت",
-    "story.s1t": "العجينة",
+    "story.s1t": "البيتزا",
     "story.s1p": "طحين وماء وملح وخميرة، ثم وقت طويل لترتاح. كل كرة عجين تُفرد باليد، ولا نستعمل الشوبك أبداً.",
     "story.s2t": "البندورة",
     "story.s2p": "بندورة ناضجة مهروسة مع رشّة ملح. هذا كل شيء. البندورة الطيبة لا تحتاج إلى شيء آخر.",
